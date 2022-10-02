@@ -1,5 +1,9 @@
 import requests
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 import bs4
 import sqlite3
 
@@ -33,13 +37,13 @@ def update_db():
 # bus routes. This allows the update_db function to stay up-to-date if the available routes on the TrueTime page change.
 def get_routes() -> List[str]:
     url = 'https://truetime.portauthority.org/bustime/wireless/html/home.jsp'
-    routes = scrape_tag(url, 'strong')
+    routes = scrape_html_tag(url, 'strong')
     print(routes)
 
 
 # This function takes in a url and tag, and then scrapes the url for the given tag. It returns a list of strings,
 # which contains every string found inside the given tag at the given url.
-def scrape_tag(url, tag: str) -> List[str]:
+def scrape_html_tag(url, tag: str) -> List[str]:
     page = requests.get(url)
     # Specify lxml parser to avoid different default parsers on different machines
     soup_object = bs4.BeautifulSoup(page.text, features='lxml')
@@ -51,17 +55,21 @@ def scrape_tag(url, tag: str) -> List[str]:
     return result
 
 
+def scrape_dynamic_tag(url, class_name: str = 'larger') -> List[str]:
+    # This is boilerplate code that initializes a Chrome web driver for use by the Selenium library.
+    options = Options()
+    options.add_argument('--headless')
+    service = Service(executable_path=ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
+    driver.get(url)
+
+    # Scrape the list of available routes from the TrueTime homepage using Selenium.
+    routes = driver.find_elements(By.CLASS_NAME, class_name)
+    for route in routes:
+        print(route.text)
+    driver.quit()
+
+
+# This code tests the scrape_dynamic_tag function, which will feed into the other scraping function in this module.
 url = 'https://truetime.portauthority.org/bustime/wireless/html/home.jsp'
-page = requests.get(url)
-soup = bs4.BeautifulSoup(page.text, features='lxml')
-print(soup.prettify())
-
-# Note: this will be a point of failure if this program is installed on other machines.
-driver = webdriver.Chrome('chromedriver_win32/chromedriver.exe')
-
-
-divs = soup.find_all('strong')  # Gets route and ETA, but not vehicle number
-for div in divs:
-    print(div.string)
-
-# get_routes()
+scrape_dynamic_tag(url)
