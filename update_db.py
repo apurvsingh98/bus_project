@@ -13,9 +13,10 @@ import json
 # about when the API call was executed.
 #
 # The API key hardcoded into this function can make a maximum of 10,000 requests per day.
+# The API key is buLQAqbqJpnyLbq4vf5vkHtSf
 def update_db():
     try:
-        url = 'http://localhost:8884/bustime/api/v3/getrtpidatafeeds?key=buLQAqbqJpnyLbq4vf5vkHtSf'
+        url = 'http://localhost:5040/bustime/api/v3/getrtpidatafeeds?key=buLQAqbqJpnyLbq4vf5vkHtSf'
         response = requests.get(url)
         print(type(response))
         for i in response:
