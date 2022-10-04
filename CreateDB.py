@@ -16,13 +16,15 @@ class CreateDB:
     def __init__(self):
         pass
 
+    # Private method. Be careful when using, because you could wipe the database.
     @staticmethod
-    def make_db_with_stops():
+    def __make_db_with_stops():
         CreateDB.__make_empty_tables()  # Create three blank tables
         CreateDB.__fill_routes_and_stops()  # Scrape TrueTime and fill in all the current bus routes and stops
 
+    # Private method. No risk of wiping database.
     @staticmethod
-    def confirm_empty_table_generated():
+    def __confirm_empty_table_generated():
         connection = sqlite3.Connection('transit_data.db')
         cursor = connection.cursor()
         print('These tables are in the database currently:')
@@ -34,6 +36,7 @@ class CreateDB:
         print(cursor.fetchall())
         connection.commit()
 
+    # Private method. Be careful when using, because you could wipe the database.
     @staticmethod
     def __make_empty_tables():
         connection = sqlite3.Connection('transit_data.db')
@@ -41,13 +44,13 @@ class CreateDB:
 
         cursor.execute('DROP TABLE IF EXISTS ROUTES')
         cursor.execute("""CREATE TABLE IF NOT EXISTS ROUTES(
-        ROUTE_ID INTEGER PRIMARY KEY,
+        ROUTE_ID TEXT PRIMARY KEY,
         ROUTE_NAME TEXT
         )""")
 
         cursor.execute('DROP TABLE IF EXISTS STOPS')
         cursor.execute("""CREATE TABLE IF NOT EXISTS STOPS(
-        STOP_ID INTEGER PRIMARY KEY,
+        STOP_ID TEXT PRIMARY KEY,
         STOP_NAME TEXT,
         DIRECTION TEXT
         )""")
@@ -69,6 +72,7 @@ class CreateDB:
 
         connection.commit()
 
+    # Private method. Fills in routes and stops based on TrueTime website, using scrape_TrueTime.
     @staticmethod
     def __fill_routes_and_stops():
         list_of_dicts = get_stop_list()
@@ -76,14 +80,23 @@ class CreateDB:
         connection = sqlite3.Connection('transit_data.db')
         cursor = connection.cursor()
 
-        routes_data = []  # We want routes here not stops! Mismatch. Uniqueness constraint also failed. For stops will need to restrict by unique stops.
-        for d in list_of_dicts:   # StopID: [StopName, ]
+        route_set = set()
+        for d in list_of_dicts:   # StopID: [StopName, Direction, RouteID, RoutName]
             for key, value in d.items():
-                tup = (key, value[0])
-                print("Now adding:", tup)
-                routes_data.append(tup)
+                route_info = (value[2], value[3])
+                # Add the information we care about for the ROUTES table into a set to ensure uniqueness
+                route_set.add(route_info)
 
-        cursor.executemany('INSERT INTO ROUTES VALUES(?, ?)', routes_data)    # List of tuples
+        stop_list = []
+        stop_set = set()
+        for d in list_of_dicts:
+            for key, value in d.items():
+                if key not in stop_set:
+                    stop_list.append((key, value[0], value[1]))
+                    stop_set.add(key)
+
+        cursor.executemany('INSERT INTO ROUTES VALUES(?, ?)', route_set)
+        cursor.executemany('INSERT INTO STOPS VALUES(?, ?, ?)', stop_list)
 
         connection.commit()
 

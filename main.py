@@ -4,8 +4,7 @@ import CreateDB
 
 
 def main():
-    CreateDB.CreateDB.make_db_with_stops()
-    CreateDB.CreateDB.confirm_empty_table_generated()
+    pass
 
 
 if __name__ == '__main__':
