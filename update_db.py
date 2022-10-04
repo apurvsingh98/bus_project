@@ -6,6 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import bs4
 import sqlite3
+from typing import List
+
 
 # Author: Jack Vandeleuv
 # Knights of Ni Project
@@ -18,11 +20,9 @@ import sqlite3
 # about when the API call was executed.
 #
 # The API key hardcoded into this function can make a maximum of 10,000 requests per day.
-# The API key is buLQAqbqJpnyLbq4vf5vkHtSf
+# The first API key the Port Authority sent is buLQAqbqJpnyLbq4vf5vkHtSf
+# They sent a second one, which also doesn't work: PR22wm3bfA5mRjzy8aZdtYbbF
 # url = 'http://localhost:8884/bustime/api/v3/gettime?key=buLQAqbqJpnyLbq4vf5vkHtSf'
-from typing import List
-
-
 def update_db():
     url = 'https://truetime.portauthority.org/bustime/wireless/html/eta.jsp?route=Port+Authority+Bus%3A71A&direction=Port+Authority+Bus%3AINBOUND&id=Port+Authority+Bus%3A2635&showAllBusses=on'
     page = requests.get(url)
