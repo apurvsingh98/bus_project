@@ -18,10 +18,10 @@ class CreateDB:
 
     # Private method. Be careful when using, because you could wipe the database.
     @staticmethod
-    def make_db_with_stops():
+    def __make_db_with_stops():
         CreateDB.__make_empty_tables()  # Create three blank tables
         CreateDB.__fill_routes_and_stops()  # Scrape TrueTime and fill in all the current bus routes and stops
-        CreateDB.__confirm_empty_table_generated() # Check the table structure to make sure all is well
+        CreateDB.__confirm_empty_table_generated()  # Check the table structure to make sure all is well
 
     # Private method. No risk of wiping database.
     @staticmethod
@@ -121,5 +121,3 @@ class CreateDB:
         cursor.executemany('INSERT INTO STOPS_ON_ROUTES VALUES(?, ?)', stop_route_combo_set)
 
         connection.commit()
-
-

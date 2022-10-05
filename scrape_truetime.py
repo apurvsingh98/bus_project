@@ -111,7 +111,7 @@ def get_stop_list() -> List[dict]:
 
     list_of_dicts = []
 
-    for route in routes[:15]:
+    for route in routes:
         print('Now Scraping Route:', route)
         r_elements = route.split('-')  # Split the route to get the route num, and route name
         r_name = r_elements[1].strip()
