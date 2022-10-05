@@ -130,13 +130,19 @@ class UpdateDB:
         connection.commit()
 
 
-cnt = 0
-while cnt < 500:
-    start = timeit.default_timer()
-    estimates = UpdateDB.scrape_estimates()
-    if estimates is not None:
-        UpdateDB.update_db(estimates)
-    stop = timeit.default_timer()
-    print('Time taken to complete while loop:', stop - start)
-    cnt += 1
-    time.sleep(30)
+def call_update_db():
+    cnt = 0
+    while cnt < 500:
+        start = timeit.default_timer()
+        estimates = UpdateDB.scrape_estimates()
+        if estimates is not None:
+            UpdateDB.update_db(estimates)
+        stop = timeit.default_timer()
+        print('Time taken to complete while loop:', stop - start)
+        cnt += 1
+        time.sleep(30)
+
+
+# !!! Note: If you call this, you may create a conflict where the test data is different between the different team
+# members.
+# call_update_db()
