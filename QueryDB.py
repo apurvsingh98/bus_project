@@ -8,7 +8,7 @@ import sqlite3
 connection = sqlite3.Connection('transit_data.db')
 cursor = connection.cursor()
 
-cursor.execute("""SELECT * FROM ESTIMATES""")
+cursor.execute("""SELECT * FROM ESTIMATES """)
 results = cursor.fetchall()
 for r in results:
     print(r)
