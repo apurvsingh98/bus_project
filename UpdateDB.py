@@ -105,14 +105,16 @@ class UpdateDB:
             eta_data = UpdateDB.process_eta_text(strong_text)
             vehicle_data = UpdateDB.process_vehicle_text(span_text)
 
-            routeno = combo[0]
-            for index, data in enumerate(eta_data):
-                if data == routeno:   # If the scraped route id and the route id we're searching for match...
-                    eta = eta_data[index + 1]
-                    vehicleno = vehicle_data[index]
-                    passengers = vehicle_data[index + 1]
-                    stop_id = combo[2]
-                    estimates.append((eta, current_time, vehicleno, passengers, stop_id, routeno))
+            # Bare-minimum check for scrape failure.
+            if len(eta_data) % 2 == 0 and len(eta_data) == len(vehicle_data):
+                routeno = combo[0]
+                for index, data in enumerate(eta_data):
+                    if data == routeno:   # If the scraped route id and the route id we're searching for match...
+                        eta = eta_data[index + 1]
+                        vehicleno = vehicle_data[index]
+                        passengers = vehicle_data[index + 1]
+                        stop_id = combo[2]
+                        estimates.append((eta, current_time, vehicleno, passengers, stop_id, routeno))
 
         session.close()
         return estimates

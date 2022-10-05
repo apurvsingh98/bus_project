@@ -9,11 +9,12 @@ def main():
     while cnt < 500:
         start = timeit.default_timer()
         estimates = UpdateDB.UpdateDB.scrape_estimates()
-        UpdateDB.UpdateDB.update_db(estimates)
+        if estimates is not None:
+            UpdateDB.UpdateDB.update_db(estimates)
         stop = timeit.default_timer()
-        print('Time taken to insert new rows:', stop - start)
+        print('Time taken to complete while loop:', stop - start)
         cnt += 1
-        time.sleep(60)
+        time.sleep(30)
 
 
 if __name__ == '__main__':
