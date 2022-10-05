@@ -1,5 +1,6 @@
 import sqlite3
 import timeit
+import time
 import bs4
 import requests
 import re
@@ -127,3 +128,15 @@ class UpdateDB:
         cursor.executemany('INSERT INTO ESTIMATES (ETA, TIME_CHECKED, VEHICLE_ID, PASSENGERS, STOP_ID, ROUTE_ID) VALUES(?, ?, ?, ?, ?, ?)', estimates)
 
         connection.commit()
+
+
+cnt = 0
+while cnt < 500:
+    start = timeit.default_timer()
+    estimates = UpdateDB.scrape_estimates()
+    if estimates is not None:
+        UpdateDB.update_db(estimates)
+    stop = timeit.default_timer()
+    print('Time taken to complete while loop:', stop - start)
+    cnt += 1
+    time.sleep(30)
