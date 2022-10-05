@@ -4,7 +4,7 @@ import CreateDB
 
 
 def main():
-    pass
+    CreateDB.CreateDB.make_db_with_stops()
 
 
 if __name__ == '__main__':
