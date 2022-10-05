@@ -145,4 +145,4 @@ def call_update_db():
 
 # !!! Note: If you call this, you may create a conflict where the test data is different between the different team
 # members.
-# call_update_db()
+call_update_db()
