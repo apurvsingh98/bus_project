@@ -26,7 +26,7 @@ class UpdateDB:
         cursor.execute("""SELECT ROUTE_ID, DIRECTION, STOP_ID
         FROM STOPS JOIN STOPS_ON_ROUTES USING(STOP_ID)
                     JOIN ROUTES USING(ROUTE_ID)
-        WHERE ROUTE_ID = '71A' OR ROUTE_ID = '71C' OR ROUTE_ID = '82'
+        WHERE ROUTE_ID = '71A' OR ROUTE_ID = '71C' OR ROUTE_ID = '82' OR ROUTE_ID = '75'
         """)
         results = cursor.fetchall()
         connection.commit()
@@ -65,7 +65,7 @@ class UpdateDB:
                     eta_list.append(route_search.group()[1:])
             if index % 2 != 0:
                 if string == 'DUE':
-                    eta_list.append(string)
+                    eta_list.append(0)
 
                 if string != 'DUE':
                     time_search = re.search(r'^\d+', string)
@@ -140,7 +140,7 @@ def call_update_db():
         stop = timeit.default_timer()
         print('Time taken to complete while loop:', stop - start)
         cnt += 1
-        time.sleep(30)
+        time.sleep(5)
 
 
 # !!! Note: If you call this, you may create a conflict where the test data is different between the different team
