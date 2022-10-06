@@ -26,7 +26,7 @@ class UpdateDB:
         cursor.execute("""SELECT ROUTE_ID, DIRECTION, STOP_ID
         FROM STOPS JOIN STOPS_ON_ROUTES USING(STOP_ID)
                     JOIN ROUTES USING(ROUTE_ID)
-        WHERE ROUTE_ID = '71A' OR ROUTE_ID = '71C' OR ROUTE_ID = '82' OR ROUTE_ID = '75'
+        WHERE ROUTE_ID = '71A' OR ROUTE_ID = '71C' OR ROUTE_ID = '82' OR ROUTE_ID = '75' OR ROUTE_ID = '28X' OR ROUTE_ID = '65'
         """)
         results = cursor.fetchall()
         connection.commit()
