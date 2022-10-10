@@ -3,7 +3,7 @@ import timeit
 import time
 from UpdateDB import UpdateDB
 from QueryDB import QueryDB
-from avg_wait_time_generator import filtered_wait_time_averages
+from avg_wait_time_generator import filtered_wait_time_averages_stops
 
 
 # Main module.
@@ -127,12 +127,13 @@ def explore_window():
         return
 
     if exp_choice == 1:
-        # We need to add functionality here to specify arguments
-        print(filtered_wait_time_averages(args))
+        # Hardcoded demo values
+        print('Calculating average frequency...')
+        print(filtered_wait_time_averages_stops([8192,8193],"71C",['2020-10-05']))
 
     if exp_choice == 2:
-        # We need to add functionality here to specify arguments
-        print(filtered_wait_time_averages(args))
+        pass
+
 
 if __name__ == '__main__':
     main()
