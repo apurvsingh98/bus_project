@@ -32,7 +32,7 @@ class UpdateDB:
         connection = sqlite3.Connection('transit_data.db')
         cursor = connection.cursor()
         query = 'SELECT ROUTE_ID, DIRECTION, STOP_ID FROM STOPS ' + 'JOIN STOPS_ON_ROUTES USING(STOP_ID) JOIN ROUTES USING(ROUTE_ID)' + route_subclause
-        print(query)
+
         cursor.execute(query)
         results = cursor.fetchall()
         connection.commit()
