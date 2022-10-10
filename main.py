@@ -3,6 +3,7 @@ import timeit
 import time
 from UpdateDB import UpdateDB
 from QueryDB import QueryDB
+from avg_wait_time_generator import filtered_wait_time_averages
 
 
 # Main module.
@@ -116,9 +117,22 @@ def delete_data_window():
             # DELETE RELEVANT DATA WITH SQL QUERY
             print(f'Successfully deleted all data for {choice2c} to {choice2d}')
 
-def explore_window():
-    pass
 
+def explore_window():
+    exp_choice = int(input('Welcome to the explore window. Enter RETURN to return to the main menu. '
+                           '\nEnter 1 or 2 to select an option:\n1) Get average frequency '
+                           'for all data in your database.\n2) Select filters.'))
+
+    if exp_choice == 'RETURN':
+        return
+
+    if exp_choice == 1:
+        # We need to add functionality here to specify arguments
+        print(filtered_wait_time_averages(args))
+
+    if exp_choice == 2:
+        # We need to add functionality here to specify arguments
+        print(filtered_wait_time_averages(args))
 
 if __name__ == '__main__':
     main()
