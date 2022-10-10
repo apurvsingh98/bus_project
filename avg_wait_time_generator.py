@@ -8,7 +8,7 @@ import os
 import pandas as pd
 from datetime import datetime
 
-def wait_time_generator (stop, line,**args):
+def wait_time_generator (stop, line):
         
     connection = sqlite3.Connection('transit_data.db')
     cursor = connection.cursor()
