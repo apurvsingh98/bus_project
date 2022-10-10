@@ -4,6 +4,7 @@ import time
 from UpdateDB import UpdateDB
 from QueryDB import QueryDB
 from avg_wait_time_generator import filtered_wait_time_averages_stops
+from weather_func import get_matching_weather_dates
 
 
 # Main module.
@@ -141,11 +142,39 @@ def explore_window():
 
     if exp_choice == 2:
         sports_op = input("Filter by days when sports games are happening in the area? (YES/NO): ")
-        weather_op = input("Only select data from days when the weather is similar to today? (YES/NO): ")
+
+        weather_op = int(input("Filter by weather? Your options are (enter an int):\n1) Don't filter by weather.\n"
+                           "2) Filter by weather similar to today. 3) Filter by weather similar to a specific, other day.\n"))
+
+        weather_dates = []
+        if weather_op == 2:
+            weather_dates = get_matching_weather_dates()
+
+        if weather_op == 3:
+            weather_dates = get_matching_weather_dates()  # Modify this later to include the specific dates from user input
+
         stop_op = input("Only select data from these stops (separate stop_id with commas; if all enter ALL): ")
+
+        stop_list = stop_op.split(',')
+        for i in range(len(stop_list)):
+            stop_list[i] = int(stop_list[i])
+
         route_op = input("Only select data from these routes (separate route_id with commas; if all enter ALL): ")
+
+        route_list = route_op.split(',')
+        for i in range(len(route_list)):
+            route_list[i] = int(route_list[i])
+
+        # Sports function will return a set of dates.
+        # Weather function will return a set of dates
+        # User will select some set of stops.
+        # User will select some set of routes.
+
         print('Calculating average frequency based on entered parameters...')
+
+        # Pass three parameter to this module. Each should either be a list of values, or a value indicating "all."
         averages = filtered_wait_time_averages_stops([8192,8193],"71C",['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06'])
+
         for key, value in averages.items():
             print(f'The average frequency at stop: {key} over the selected period is {value}')
 

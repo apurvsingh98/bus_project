@@ -107,6 +107,7 @@ class UpdateDB:
         for combo in urls_and_data:
             url = combo[3]
             current_time = str(datetime.datetime.now())
+
             strong_text = UpdateDB.scrape_html_tags(session, url, 'larger', 'strong')
             span_text = UpdateDB.scrape_html_tags(session, url, 'smaller', 'span')
             eta_data = UpdateDB.process_eta_text(strong_text)
