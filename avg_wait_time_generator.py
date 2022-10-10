@@ -15,6 +15,8 @@ def avg_wait_time_generator (stop, line,**args):
     cursor.execute('SELECT ETA, time_checked, stop_id,route_id,Vehicle_id FROM ESTIMATES WHERE STOP_ID =' + str(stop) +' AND ROUTE_ID = "'+line+ '"')
     results = cursor.fetchall()
 
+    connection.commit()
+
     data_dict={'ETA':[], 
     'time_checked':[], 
     'stop_id':[],
@@ -58,6 +60,7 @@ def avg_wait_time_generator (stop, line,**args):
             start = row['time_checked']
             last_bus = [row['Vehicle_id']]
             first = 1
+
     return wait_times
     
 def get_stop_ids(line):
@@ -65,6 +68,7 @@ def get_stop_ids(line):
     cursor = connection.cursor()
     cursor.execute('SELECT stop_id,route_id FROM ROUTES JOIN STOPS_ON_ROUTES USING(Route_ID) WHERE ROUTE_ID = "71C"')
     results = cursor.fetchall()
+    connection.commit()
     return results
 
 def get_all_wait_times_line(line):
