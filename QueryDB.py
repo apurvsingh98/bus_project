@@ -19,6 +19,46 @@ class QueryDB:
         return available_routes
 
     @staticmethod
+    def get_scraped_routes():
+        connection = sqlite3.Connection('transit_data.db')
+        cursor = connection.cursor()
+        cursor.execute('SELECT DISTINCT(ROUTE_ID) FROM ESTIMATES')
+        scraped_routes = cursor.fetchall()
+        connection.commit()
+
+        return scraped_routes
+
+    @staticmethod
+    def get_scraped_stops():
+        connection = sqlite3.Connection('transit_data.db')
+        cursor = connection.cursor()
+        cursor.execute('SELECT DISTINCT(STOP_ID) FROM ESTIMATES')
+        scraped_stops = cursor.fetchall()
+        connection.commit()
+
+        return scraped_stops
+
+    @staticmethod
+    def get_scraped_days():
+        connection = sqlite3.Connection('transit_data.db')
+        cursor = connection.cursor()
+        cursor.execute('SELECT DISTINCT(SUBSTR(TIME_CHECKED, 1, 10)) AS days FROM ESTIMATES ORDER BY days DESC')
+        scraped_days = cursor.fetchall()
+        connection.commit()
+
+        return scraped_days
+
+    @staticmethod
+    def count_estimates():
+        connection = sqlite3.Connection('transit_data.db')
+        cursor = connection.cursor()
+        cursor.execute('SELECT COUNT(ID) FROM ESTIMATES')
+        estimate_count = cursor.fetchall()
+        connection.commit()
+
+        return estimate_count
+
+    @staticmethod
     def count_data():
         # Here's the boilerplate code needed to query the database.
         connection = sqlite3.Connection('transit_data.db')
@@ -31,10 +71,11 @@ class QueryDB:
         # GROUP BY stop_id
         # ORDER BY STOP_NAME DESC""")
 
-        cursor.execute("""SELECT TIME_CHECKED FROM ESTIMATES WHERE SUBSTR(TIME_CHECKED, 1, 10) = "2022-10-05" LIMIT 100""")
+        cursor.execute("""SELECT * FROM ESTIMATES ORDER BY TIME_CHECKED DESC LIMIT 100""")
 
         results = cursor.fetchall()
         for r in results:
             print(r)
 
         connection.commit()
+
