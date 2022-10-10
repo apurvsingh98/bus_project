@@ -1,6 +1,8 @@
+import os
 
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
 
 # This code returns a dictionary of the date and stadium location for all Steeler's home games.
 # It also returns a list of just the dates of Steeler's home games.
@@ -25,8 +27,8 @@ Steelers_home_games = {date:stadium for date,stadium in all_games.items() if sta
 Steelers_home_dates = list(date for date in Steelers_home_games.keys() if date != '')
 print(Steelers_home_games)
 print(Steelers_home_dates, '\n')
-
-#Penguin's Schedule
+#
+# #Penguin's Schedule
 httpPens = 'https://www.ppgpaintsarena.com/events'
 print(httpPens)
 Penspage = requests.get(httpPens)
@@ -41,8 +43,16 @@ Pens_events = {name:date for name,date in events.items() if name[0:8] == 'Pengui
 Pens_home_dates = list(Pens_events.values())
 game_location = list(['PPG Paints Arena']*len(Pens_home_dates))
 Pens_home_games = dict(zip(Pens_home_dates, game_location))
-print(Pens_home_games)
-print(Pens_home_dates)
+print(Pens_home_games, '\n')
+# print(Pens_home_dates)
+
+#University of Pittsburgh Panther's Schedule
+Panthers_schedule = pd.read_csv(r'C:\Users\genna\OneDrive\Documents\Carnegie Mellon University\CMU - Fall 2022\90819 - Intermediate Programming with Python\Homeworks\bus_project\pitt_football_homegames.txt')
+Panthers_schedule.to_csv(r'C:\Users\genna\OneDrive\Documents\Carnegie Mellon University\CMU - Fall 2022\90819 - Intermediate Programming with Python\Homeworks\bus_project\pitt_football_homegames.csv', header=None)
+print(Panthers_schedule)
+
+Panther_game_dates = Panthers_schedule['At'].to_list()
+print(Panther_game_dates)
 
 #def sports_schedule():
 #    date = input('Please enter a date in YYYY-MM-DD format: ')
