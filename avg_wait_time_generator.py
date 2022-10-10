@@ -91,7 +91,8 @@ def get_wait_times_stop (stops,line):
 def filtered_wait_time_averages_stops(*args):
     dict_to_return ={}
     # print(args[0])
-    data = get_wait_times_stop (args[0],args[1])
+    # Pass stops and line to get_wait_times_stop
+    data = get_wait_times_stop(args[0],args[1])
     if len(args)==3:
         for stop in args[0]:
             temp = data.loc[data['day_checked'].isin(args[2])]
@@ -137,10 +138,12 @@ def get_all_wait_times_line(line):
     return output_data
 
 def filtered_wait_time_averages_line(*args):
+    # Accepts two arguments: line and date list
     if len(args)==2:
         data = get_all_wait_times_line(args[0])
         temp = data.loc[data['day_checked'].isin(args[1])]
         return temp['wait_time'].mean()
+    # Accepts one argument: line
     else:
         data = get_all_wait_times_line(args[0])
         return data['wait_time'].mean()

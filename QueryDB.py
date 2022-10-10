@@ -71,11 +71,10 @@ class QueryDB:
         # GROUP BY stop_id
         # ORDER BY STOP_NAME DESC""")
 
-        cursor.execute("""SELECT * FROM ESTIMATES ORDER BY TIME_CHECKED DESC LIMIT 100""")
+        cursor.execute("""SELECT * FROM ESTIMATES WHERE STOP_ID = 2565 AND ROUTE_ID = '71A' LIMIT 1000""")
 
         results = cursor.fetchall()
         for r in results:
             print(r)
 
         connection.commit()
-

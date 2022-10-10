@@ -129,7 +129,13 @@ def explore_window():
     if exp_choice == 1:
         # Hardcoded demo values
         print('Calculating average frequency...')
-        averages = filtered_wait_time_averages_stops([8192,8193],"71C",['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06'])
+        scraped_stops = QueryDB.get_scraped_stops()
+        scraped_routes = QueryDB.get_scraped_routes()
+
+        for i in range(len(scraped_stops)):
+            scraped_stops[i] = int(scraped_stops[i][0])
+
+        averages = filtered_wait_time_averages_stops(scraped_stops,"71C",['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06'])
         for key, value in averages.items():
             print(f'The average frequency at stop: {key} over the selected period is {value}')
 
