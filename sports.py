@@ -18,15 +18,15 @@ Steelsoup = BeautifulSoup(Steelpage.content, 'html.parser')
 game_info = Steelsoup.find_all(class_='nfl-o-matchup-cards__date-info')
 weeks = list(game.getText().strip().split(' · ') for game in game_info)
 weeks.pop(8) #bye week
-game_dates = list(week[1][4:] for week in weeks)
-
+game_dates = list('2022-'+ week[1][4:6] + '-' + week[1][7:] for week in weeks)
+print(weeks)
 game_location = Steelsoup.find_all(class_='nfl-o-matchup-cards__venue--location')
 location_list = list(game.getText().strip() for game in game_location)
 
 all_games = dict(zip(game_dates, location_list))
 
 Steelers_home_games = {date:stadium for date,stadium in all_games.items() if stadium == 'Acrisure Stadium'}
-Steelers_home_dates = list('2022/' + date for date in Steelers_home_games.keys() if date != '')
+Steelers_home_dates = list(date for date in Steelers_home_games.keys() if date != '')
 print(Steelers_home_games, '\n')
 #print(Steelers_home_dates, '\n')
 #
@@ -62,7 +62,7 @@ for date in Pens_home_dates:
         formatted_days.append(new_day)
     else:
         formatted_days.append(day)
-formatted_dates = list('2022/' + formatted_months[i] + '/' + formatted_days[i] for i in range(len(formatted_months)))
+formatted_dates = list('2022-' + formatted_months[i] + '-' + formatted_days[i] for i in range(len(formatted_months)))
 Pens_home_games = dict(zip(formatted_dates, game_location))
 print(Pens_home_games, '\n')
 
@@ -108,7 +108,7 @@ for date in dates:
         formatted_days.append(new_day)
     else:
         formatted_days.append(day)
-formatted_dates = list('2022/' + formatted_months[i] + '/' + formatted_days[i] for i in range(len(formatted_months)))
+formatted_dates = list('2022-' + formatted_months[i] + '-' + formatted_days[i] for i in range(len(formatted_months)))
 
 Panthers_home_games = dict(zip(formatted_dates, location))
 print(Panthers_home_games)
