@@ -90,7 +90,7 @@ def get_wait_times_stop (stops,line):
 
 def filtered_wait_time_averages_stops(*args):
     dict_to_return ={}
-    print(args[0])
+    # print(args[0])
     data = get_wait_times_stop (args[0],args[1])
     if len(args)==3:
         for stop in args[0]:
@@ -154,5 +154,5 @@ def main():
     # wait_time_generator(8192,"71C")
 
 if __name__ == "__main__":
-    os.chdir(r"/Users/arehman95/Desktop/CMU/Intermediate Python/PROJECT/")
+    # os.chdir(r"/Users/arehman95/Desktop/CMU/Intermediate Python/PROJECT/")
     main()

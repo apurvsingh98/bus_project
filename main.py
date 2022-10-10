@@ -129,11 +129,19 @@ def explore_window():
     if exp_choice == 1:
         # Hardcoded demo values
         print('Calculating average frequency...')
-        print(filtered_wait_time_averages_stops([8192,8193],"71C",['2020-10-05']))
+        averages = filtered_wait_time_averages_stops([8192,8193],"71C",['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06'])
+        for key, value in averages.items():
+            print(f'The average frequency at stop: {key} over the selected period is {value}')
 
     if exp_choice == 2:
-        pass
-
+        sports_op = input("Filter by days when sports games are happening in the area? (YES/NO): ")
+        weather_op = input("Only select data from days when the weather is similar to today? (YES/NO): ")
+        stop_op = input("Only select data from these stops (separate stop_id with commas; if all enter ALL): ")
+        route_op = input("Only select data from these routes (separate route_id with commas; if all enter ALL): ")
+        print('Calculating average frequency based on entered parameters...')
+        averages = filtered_wait_time_averages_stops([8192,8193],"71C",['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06'])
+        for key, value in averages.items():
+            print(f'The average frequency at stop: {key} over the selected period is {value}')
 
 if __name__ == '__main__':
     main()
