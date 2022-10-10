@@ -22,7 +22,7 @@ class QueryDB:
         # GROUP BY stop_id
         # ORDER BY STOP_NAME DESC""")
 
-        cursor.execute("""SELECT * FROM ESTIMATES WHERE ROUTE_ID = "71C" """)
+        cursor.execute("""SELECT * FROM ESTIMATES ORDER BY ID DESC LIMIT 1000""")
 
         results = cursor.fetchall()
         for r in results:
