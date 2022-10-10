@@ -1,6 +1,5 @@
 import sqlite3
 import timeit
-import time
 import bs4
 import requests
 import re
@@ -20,14 +19,21 @@ class UpdateDB:
 
     # Private method that queries the database and packages the results together in a pandas Series of urls.
     @staticmethod
-    def __get_urls_to_query():
+    def __get_urls_to_query(lines):
+        route_subclause = " WHERE ROUTE_ID IN (\""
+
+        if len(lines) == 1:
+            route_subclause = f' WHERE ROUTE_ID = "{lines[0]}"'
+
+        if len(lines) > 1:
+            cs_lines = '","'.join(lines)
+            route_subclause = route_subclause + cs_lines + "\")"
+
         connection = sqlite3.Connection('transit_data.db')
         cursor = connection.cursor()
-        cursor.execute("""SELECT ROUTE_ID, DIRECTION, STOP_ID
-        FROM STOPS JOIN STOPS_ON_ROUTES USING(STOP_ID)
-                    JOIN ROUTES USING(ROUTE_ID)
-        WHERE ROUTE_ID = '71A' OR ROUTE_ID = '71C' OR ROUTE_ID = '82'
-        """)
+        query = 'SELECT ROUTE_ID, DIRECTION, STOP_ID FROM STOPS ' + 'JOIN STOPS_ON_ROUTES USING(STOP_ID) JOIN ROUTES USING(ROUTE_ID)' + route_subclause
+        print(query)
+        cursor.execute(query)
         results = cursor.fetchall()
         connection.commit()
 
@@ -92,8 +98,8 @@ class UpdateDB:
         return vehicle_data
 
     @staticmethod
-    def scrape_estimates():
-        urls_and_data = UpdateDB.__get_urls_to_query()
+    def scrape_estimates(lines):
+        urls_and_data = UpdateDB.__get_urls_to_query(lines)
         session = requests.session()
         estimates = []
 
@@ -128,21 +134,3 @@ class UpdateDB:
         cursor.executemany('INSERT INTO ESTIMATES (ETA, TIME_CHECKED, VEHICLE_ID, PASSENGERS, STOP_ID, ROUTE_ID) VALUES(?, ?, ?, ?, ?, ?)', estimates)
 
         connection.commit()
-
-
-def call_update_db():
-    cnt = 0
-    while cnt < 500:
-        start = timeit.default_timer()
-        estimates = UpdateDB.scrape_estimates()
-        if estimates is not None:
-            UpdateDB.update_db(estimates)
-        stop = timeit.default_timer()
-        print('Time taken to complete while loop:', stop - start)
-        cnt += 1
-        time.sleep(5)
-
-
-# !!! Note: If you call this, you may create a conflict where the test data is different between the different team
-# members.
-# call_update_db()

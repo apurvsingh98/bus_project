@@ -8,6 +8,15 @@ class QueryDB:
     def __init__(self):
         pass
 
+    @staticmethod
+    def get_available_routes():
+        connection = sqlite3.Connection('transit_data.db')
+        cursor = connection.cursor()
+        cursor.execute('SELECT ROUTE_ID, ROUTE_NAME FROM ROUTES')
+        available_routes = cursor.fetchall()
+        connection.commit()
+
+        return available_routes
 
     @staticmethod
     def count_data():
@@ -22,13 +31,10 @@ class QueryDB:
         # GROUP BY stop_id
         # ORDER BY STOP_NAME DESC""")
 
-        cursor.execute("""SELECT * FROM ESTIMATES ORDER BY ID DESC LIMIT 1000""")
+        cursor.execute("""SELECT TIME_CHECKED FROM ESTIMATES WHERE SUBSTR(TIME_CHECKED, 1, 10) = "2022-10-05" LIMIT 100""")
 
         results = cursor.fetchall()
         for r in results:
             print(r)
 
         connection.commit()
-
-
-QueryDB.count_data()
