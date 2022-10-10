@@ -8,7 +8,7 @@ import os
 import pandas as pd
 from datetime import datetime
 
-def avg_wait_time_generator (stop, line,**args):
+def wait_time_generator (stop, line,**args):
         
     connection = sqlite3.Connection('transit_data.db')
     cursor = connection.cursor()
@@ -59,19 +59,16 @@ def avg_wait_time_generator (stop, line,**args):
             last_bus = [row['Vehicle_id']]
             first = 1
     return wait_times
-    
-def get_stop_ids(line):
-    connection = sqlite3.Connection('transit_data.db')
-    cursor = connection.cursor()
-    cursor.execute('SELECT stop_id,route_id FROM ROUTES JOIN STOPS_ON_ROUTES USING(Route_ID) WHERE ROUTE_ID = "71C"')
-    results = cursor.fetchall()
-    return results
 
-def get_all_wait_times_line(line):
-    stops = get_stop_ids(line)
+def get_wait_times_stop (stops,line):
     wait_times =[]
-    for stop in stops:
-        wait_times.append(avg_wait_time_generator(stop[0],line))
+    try:
+        for stop in stops:
+            wait_times.append(wait_time_generator(stop[0],line))
+    except:
+        for stop in stops:
+            wait_times.append(wait_time_generator(stop,line))       
+
     output_dict={'wait_time':[], 
     'stop_id':[],
     'route_id':[],
@@ -88,28 +85,74 @@ def get_all_wait_times_line(line):
             output_dict['time_checked'].append(stop[4])
             output_dict['day_checked'].append(stop[5])
     output_data=pd.DataFrame(output_dict)
-    # print(output_data.head(50))
-    # print(output_data['wait_time'].mean())
+    # print(output_data)
     return output_data
 
-
-def filtered_wait_time_averages(*args):
+def filtered_wait_time_averages_stops(*args):
+    dict_to_return ={}
+    print(args[0])
+    data = get_wait_times_stop (args[0],args[1])
     if len(args)==3:
-        data = get_all_wait_times_line(args[1])
-        temp = data.loc[data['day_checked'].isin(args[2])]
+        for stop in args[0]:
+            temp = data.loc[data['day_checked'].isin(args[2])]
+            temp1 = temp.loc[temp['stop_id']==stop]
+            dict_to_return[stop]=temp1['wait_time'].mean()
+        return dict_to_return
+    if len(args)==2:
+        for stop in args[0]:
+            print(args[0])
+            print(stop)
+            temp1 = data.loc[data['stop_id']==stop]
+            dict_to_return[stop]=temp1['wait_time'].mean() 
+        return dict_to_return
+
+def get_stop_ids(line):
+    connection = sqlite3.Connection('transit_data.db')
+    cursor = connection.cursor()
+    cursor.execute('SELECT stop_id,route_id FROM ROUTES JOIN STOPS_ON_ROUTES USING(Route_ID) WHERE ROUTE_ID = "71C"')
+    results = cursor.fetchall()
+    return results
+
+def get_all_wait_times_line(line):
+    stops = get_stop_ids(line)
+    wait_times =[]
+    for stop in stops:
+        wait_times.append(wait_time_generator(stop[0],line))
+    output_dict={'wait_time':[], 
+    'stop_id':[],
+    'route_id':[],
+    'Vehicle_id':[],
+    'time_checked':[],
+    'day_checked':[],
+    }
+    for wait_time in wait_times:
+        for stop in wait_time:
+            output_dict['wait_time'].append(stop[0])
+            output_dict['stop_id'].append(stop[1])
+            output_dict['route_id'].append(stop[2])
+            output_dict['Vehicle_id'].append(stop[3])
+            output_dict['time_checked'].append(stop[4])
+            output_dict['day_checked'].append(stop[5])
+    output_data=pd.DataFrame(output_dict)
+    return output_data
+
+def filtered_wait_time_averages_line(*args):
+    if len(args)==2:
+        data = get_all_wait_times_line(args[0])
+        temp = data.loc[data['day_checked'].isin(args[1])]
         return temp['wait_time'].mean()
     else:
-        data = get_all_wait_times_line(args[1])
+        data = get_all_wait_times_line(args[0])
         return data['wait_time'].mean()
 
-
 def main():
-    october_dates = ['2022-10-0'+str(i) for i in range(1,11)]
-    # print(october_dates)
-    print(filtered_wait_time_averages("overall","71C"))
-    print(filtered_wait_time_averages("October","71C",october_dates,))
-    # avg_wait_time_generator(8192,"71C")
+    october_dates = ['2022-10-0'+str(i) for i in range(1,7)]
+    print(october_dates)
+    print(filtered_wait_time_averages_stops([8192,8193],"71C",october_dates))
+    # print(filtered_wait_time_averages_line("71C"))
+    # print(filtered_wait_time_averages_line("71C",october_dates))
+    # wait_time_generator(8192,"71C")
 
 if __name__ == "__main__":
-    # os.chdir(r"/Users/arehman95/Desktop/CMU/Intermediate Python/PROJECT/")
+    os.chdir(r"/Users/arehman95/Desktop/CMU/Intermediate Python/PROJECT/")
     main()
