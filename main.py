@@ -7,7 +7,7 @@ from DeleteDBRecords import DeleteDBRecords
 from avg_wait_time_generator import filtered_wait_time_averages_stops
 from weather_func import get_matching_weather_dates
 from sports import get_sports_schedule
-
+from CalcOnTimePercentage import CalcOnTimePercentage
 
 # Main module.
 def main():
@@ -205,8 +205,6 @@ def get_avg_frequency_by_criteria():
             if len(weather_date) == 10 and type(weather_date) == str:
                 limit_by_days.add(weather_date)
 
-
-
     print("\nThe routes you have scraped data for in your database are:")
     scraped_routes = QueryDB.get_scraped_routes()
     for route in scraped_routes:
@@ -215,8 +213,6 @@ def get_avg_frequency_by_criteria():
     route_op = input("Select a route (you can only select one route, and you must select one): ")
 
     route = route_op.strip()
-
-
 
     see_stops = input("Would you like to see a list of available stops (with associated routes) in your database of scraped data? (YES/NO): ")
 
@@ -243,6 +239,8 @@ def get_avg_frequency_by_criteria():
             stop_list = [int(stop_op.strip())]
 
     print('Calculating average frequency based on entered parameters...')
+
+    CalcOnTimePercentage()
 
     # Find the days for which we have data which are not in the list of selected dates.
     scraped_days_list = QueryDB.get_scraped_days()
