@@ -67,9 +67,9 @@ def scrape_window():
                 if estimates is not None:
                     UpdateDB.update_db(estimates)
                 stop = timeit.default_timer()
-                print('One scrape cycle completed, taking:', stop - start)
+                print('One scrape cycle completed, taking:', stop - start, ' seconds.')
                 cnt += 1
-                print('Done scraping!')
+    print('Done scraping!')
 
 def delete_all_estimates():
     final_delete_choice = input("Are you sure you want to delete all previously scraped data (Y/N)?")
@@ -166,6 +166,7 @@ def delete_data_window():
         if choice1 == 'DATES':
             delete_by_dates()
 
+# This function is not currently being called because we disabled option 1 in window 3 (it was taking too long to run)
 def get_avg_frequency_for_all():
     print('Calculating average frequency...')
     scraped_stops = QueryDB.get_scraped_stops()
@@ -206,12 +207,16 @@ def get_avg_frequency_by_criteria():
 
     stop_op = input("Only select data from these stops (separate stop_id with commas; if all enter ALL): ")
 
-    if ',' in stop_op:
-        stop_list = stop_op.split(',')
-        for i in range(len(stop_list)):
-            stop_list[i] = int(stop_list[i].strip())
-    if ',' not in stop_op:
-        stop_list = [int(stop_op.strip())]
+    if stop_op == 'ALL':
+        stop_list = QueryDB.get_scraped_stops
+
+    if stop_op != 'ALL':
+        if ',' in stop_op:
+            stop_list = stop_op.split(',')
+            for i in range(len(stop_list)):
+                stop_list[i] = int(stop_list[i].strip())
+        if ',' not in stop_op:
+            stop_list = [int(stop_op.strip())]
 
     route_op = input("Select a route (you can only select one route, and you must select one): ")
 
@@ -233,15 +238,18 @@ def get_avg_frequency_by_criteria():
 
 
 def explore_window():
-    exp_choice = int(input('Welcome to the explore window. Enter RETURN to return to the main menu. '
-                           '\nEnter 1 or 2 to select an option:\n1) Get average frequency '
-                           'for all data in your database.\n2) Select filters.\n'))
+    # Removed option 1 (which was: average frequency for all scraped stops/routes), because it was taking too long to process.
+    exp_choice = 2
 
-    if exp_choice == 'RETURN':
-        return
+    # exp_choice = int(input('Welcome to the explore window. Enter RETURN to return to the main menu. '
+    #                        '\nEnter 1 or 2 to select an option:\n1) Get average frequency '
+    #                        'for all data in your database.\n2) Select filters.\n'))
+    #
+    # if exp_choice == 'RETURN':
+    #     return
 
-    if exp_choice == 1:
-        get_avg_frequency_for_all()
+    # if exp_choice == 1:
+    #     get_avg_frequency_for_all()
 
     if exp_choice == 2:
         get_avg_frequency_by_criteria()
