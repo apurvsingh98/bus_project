@@ -204,8 +204,6 @@ def get_avg_frequency_by_criteria():
             if len(weather_date) == 10 and type(weather_date) == str:
                 limit_by_days.add(weather_date)
 
-    print('limit_by_days', limit_by_days)
-
     stop_op = input("Only select data from these stops (separate stop_id with commas; if all enter ALL): ")
 
     if ',' in stop_op:

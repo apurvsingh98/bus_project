@@ -34,7 +34,7 @@ def get_matching_weather_dates(*args):
     else:
         day = str(today.day)
     date_str = str(today.year)+'-'+str(today.month) +'-'+day
-    print(date_str)
+    # print(date_str)
 
     # The API call includes a latitude, longitude (for Pittsburgh), 
     # time zone, start and end date for which to gather data, 
@@ -77,10 +77,10 @@ def get_matching_weather_dates(*args):
 
     temp1 = (data1['daily']['temperature_2m_max'][0] + data1['daily']['temperature_2m_min'][0])
     current_temp = temp1/2
-    print('Current temp:', current_temp)
+    # print('Current temp:', current_temp)
     current_precip_sum = data1['daily']['precipitation_sum']
     current_precip_sum = current_precip_sum[0]
-    print('Current_precip:',current_precip_sum)
+    # print('Current_precip:',current_precip_sum)
 
     # The following lines find the dates where the weather 
     # matches the weather conditions of the current day
@@ -100,8 +100,8 @@ def get_matching_weather_dates(*args):
 
     # Returns a list of dates to be used to filter the wait times   
 
-    print(dates_of_interest)
-    print(len(dates_of_interest))
+    # print(dates_of_interest)
+    # print(len(dates_of_interest))
     return dates_of_interest
 
 def main():
