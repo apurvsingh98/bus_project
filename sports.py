@@ -69,8 +69,8 @@ print(Pens_home_games, '\n')
 #University of Pittsburgh Panther's Schedule
 print('University of Pittsburgh Panthers\' Home Schedule:')
 column_list = ['Date', 'Time', 'At', 'Opponent', 'Location']
-Panthers_schedule = pd.read_csv(r'C:\Users\genna\OneDrive\Documents\Carnegie Mellon University\CMU - Fall 2022\90819 - Intermediate Programming with Python\Homeworks\bus_project\pitt_football_homegames.txt')
-Panthers_schedule.to_csv(r'C:\Users\genna\OneDrive\Documents\Carnegie Mellon University\CMU - Fall 2022\90819 - Intermediate Programming with Python\Homeworks\bus_project\pitt_football_homegames.csv')
+Panthers_schedule = pd.read_csv(r'pitt_football_homegames.txt')
+Panthers_schedule.to_csv(r'pitt_football_homegames.csv')
 new_schedule = Panthers_schedule.squeeze()
 game_list = list(new_schedule.loc[i] for i in range(7))
 
