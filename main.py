@@ -166,7 +166,18 @@ def delete_data_window():
             delete_by_dates()
 
 def get_avg_frequency_for_all():
+    print('Calculating average frequency...')
+    scraped_stops = QueryDB.get_scraped_stops()
+    scraped_routes = QueryDB.get_scraped_routes()
+    scraped_days = QueryDB.get_scraped_days
 
+    averages = []
+    for route in scraped_routes:
+        averages.append(filtered_wait_time_averages_stops(scraped_stops, route, scraped_days))
+
+    for dict_list in averages:
+        for key, value in dict_list.items():
+            print(f'The average frequency at stop: {key} over the selected period is {value}')
 
 
 def explore_window():
@@ -178,18 +189,7 @@ def explore_window():
         return
 
     if exp_choice == 1:
-        print('Calculating average frequency...')
-        scraped_stops = QueryDB.get_scraped_stops()
-        scraped_routes = QueryDB.get_scraped_routes()
-        scraped_days = QueryDB.get_scraped_days
-
-        averages = []
-        for route in scraped_routes:
-            averages.append(filtered_wait_time_averages_stops(scraped_stops, route, scraped_days))
-
-        for dict_list in averages:
-            for key, value in dict_list.items():
-                print(f'The average frequency at stop: {key} over the selected period is {value}')
+        get_avg_frequency_for_all()
 
     if exp_choice == 2:
         sports_op = input("Filter by days when sports games are happening in the area? (YES/NO): ")
