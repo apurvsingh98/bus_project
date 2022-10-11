@@ -78,7 +78,7 @@ class QueryDB:
 
         # cursor.execute("""SELECT * FROM ESTIMATES WHERE SUBSTR(TIME_CHECKED, 1, 13) = '2022-10-08 14'""")
 
-        cursor.execute("""SELECT * FROM ESTIMATES WHERE STOP_ID = 9334""")
+        cursor.execute("""SELECT COUNT(ID) FROM ESTIMATES""")
 
         results = cursor.fetchall()
         for r in results:

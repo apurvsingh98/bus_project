@@ -7,6 +7,14 @@ from DeleteDBRecords import DeleteDBRecords
 from avg_wait_time_generator import filtered_wait_time_averages_stops
 from weather_func import get_matching_weather_dates
 
+# def delete_by_stops():
+#     pass
+#
+# def delete_by_routes():
+#     pass
+#
+#
+
 
 # Main module.
 def main():
@@ -78,7 +86,7 @@ def delete_data_window():
 
         choice1 = input(f"\nWelcome to the delete menu. Enter 'RETURN' to return to the main menu.\n"
                         f"You currently have {n_records} scraped datapoints in your database. "
-                        "To delete data, enter DELETE ALL, or pick what criteria you'd like to delete by: STOP_ID, ROUTE_ID, DATE RANGE: ")
+                        "To delete data, enter DELETE ALL, or pick what criteria you'd like to delete by: STOP_ID, ROUTE_ID, DATES: ")
 
         if choice1 == 'RETURN':
             return
@@ -95,9 +103,19 @@ def delete_data_window():
             stops = QueryDB.get_scraped_stops()
             for stop in stops:
                 print(stop)
-            choice2a = input("Select which stops you'd like to delete data for: ")
+            choice2a = input("Select which stops you'd like to delete data for (for multiple stops, separate by commas: ")
             print(f'Deleting all data for {choice2a}')
-            # DELETE RELEVANT DATA WITH SQL QUERY
+
+            if ',' in choice2a:
+                stops_to_delete = choice2a.split(',')
+                for i in range(len(stops_to_delete)):
+                    stops_to_delete[i] = stops_to_delete[i].strip()
+
+            if ',' not in choice2a:
+                stops_to_delete = [choice2a.strip()]
+
+            DeleteDBRecords.delete_by_criteria(stops_to_delete, [], [])
+
             print(f'Successfully deleted all data for {choice2a}')
 
         if choice1 == 'ROUTE_ID':
@@ -107,19 +125,38 @@ def delete_data_window():
                 print(route)
             choice2b = input("Select which routes you'd like to delete data for: ")
             print(f'Deleting all data for {choice2b}')
-            # DELETE RELEVANT DATA WITH SQL QUERY
+
+            if ',' in choice2b:
+                routes_to_delete = choice2b.split(',')
+                for i in range(len(routes_to_delete)):
+                    routes_to_delete[i] = routes_to_delete[i].strip()
+
+            if ',' not in choice2b:
+                routes_to_delete = [choice2b.strip()]
+
+            DeleteDBRecords.delete_by_criteria([], routes_to_delete, [])
+
             print(f'Successfully deleted all data for {choice2b}')
 
-        if choice1 == 'DATE RANGE':
+        if choice1 == 'DATES':
             print('Currently you have data from these days in your database:')
             days = QueryDB.get_scraped_days()
             for day in days:
                 print(day)
-            choice2c = input("Enter the starting day (inclusive) of the range of days you'd like to delete: ")
-            choice2d = input("Enter the ending day (inclusive) of the range of days you'd like to delete: ")
-            print(f'Deleting all data for {choice2c} to {choice2d}')
-            # DELETE RELEVANT DATA WITH SQL QUERY
-            print(f'Successfully deleted all data for {choice2c} to {choice2d}')
+            choice2c = input("Enter the dates you'd like to delete data for, separated by commas (e.g. 2020-10-05, 2020-10-07): ")
+            print(f'Deleting all data for {choice2c}')
+
+            if ',' in choice2c:
+                dates_to_delete = choice2c.split(',')
+                for i in range(len(dates_to_delete)):
+                    dates_to_delete[i] = dates_to_delete[i].strip()
+
+            if ',' not in choice2c:
+                dates_to_delete = [choice2c.strip()]
+
+            DeleteDBRecords.delete_by_criteria([], [], dates_to_delete)
+
+            print(f'Successfully deleted all data for {choice2c}')
 
 
 def explore_window():
