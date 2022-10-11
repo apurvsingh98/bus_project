@@ -10,10 +10,24 @@ from datetime import datetime
 
 
 def wait_time_generator(stop, line):
+    # Validate stop input
+    if type(stop) != str:
+        stop = str(stop)
+
+    # Validate line input
+    if type(line) == tuple and len(line) == 1:
+        line = line[0]
+
+    if type(line) == int:
+        line = str(line)
+
+    # print(stop, type(stop), line, type(line))
+
     connection = sqlite3.Connection('transit_data.db')
     cursor = connection.cursor()
-    cursor.execute('SELECT ETA, time_checked, stop_id,route_id,Vehicle_id FROM ESTIMATES WHERE STOP_ID =' + str(
-        stop) + ' AND ROUTE_ID = "' + line + '"')
+
+    query = 'SELECT ETA, time_checked, stop_id,route_id,Vehicle_id FROM ESTIMATES WHERE STOP_ID =' + stop + ' AND ROUTE_ID = "' + line + '"'
+    cursor.execute(query)
     results = cursor.fetchall()
 
     data_dict = {'ETA': [],
@@ -27,7 +41,13 @@ def wait_time_generator(stop, line):
             data_dict['ETA'].append(0)
         else:
             data_dict['ETA'].append(r[0])
-        data_dict['time_checked'].append(r[1])
+
+        # Validate dates. Some dates are missing information after the minute value. If this is the case, add .0000000
+        if len(r[1]) > 19:
+            data_dict['time_checked'].append(r[1])
+        if len(r[1]) <= 19:
+            data_dict['time_checked'].append(r[1] + '.000000')
+
         data_dict['stop_id'].append(r[2])
         data_dict['route_id'].append(r[3])
         data_dict['Vehicle_id'].append(r[4])
@@ -60,16 +80,14 @@ def wait_time_generator(stop, line):
             start = row['time_checked']
             last_bus = [row['Vehicle_id']]
             first = 1
-    print(wait_times)
     return wait_times
 
 
 def get_wait_times_stop(stops, line):
     wait_times = []
-    try:
-        for stop in stops:
-            wait_times.append(wait_time_generator(stop[0], line))
-    except:
+    if type(stops) == int:
+        wait_times.append(wait_time_generator(stops, line))
+    if type(stops) == list:
         for stop in stops:
             wait_times.append(wait_time_generator(stop, line))
 
@@ -95,7 +113,6 @@ def get_wait_times_stop(stops, line):
 
 def filtered_wait_time_averages_stops(*args):
     dict_to_return = {}
-    print(args[0])
     data = get_wait_times_stop(args[0], args[1])
     if len(args) == 3:
         for stop in args[0]:
@@ -105,8 +122,6 @@ def filtered_wait_time_averages_stops(*args):
         return dict_to_return
     if len(args) == 2:
         for stop in args[0]:
-            print(args[0])
-            print(stop)
             temp1 = data.loc[data['stop_id'] == stop]
             dict_to_return[stop] = temp1['wait_time'].mean()
         return dict_to_return
@@ -156,7 +171,6 @@ def filtered_wait_time_averages_line(*args):
 
 def main():
     october_dates = ['2022-10-0' + str(i) for i in range(1, 7)]
-    print(october_dates)
     print(filtered_wait_time_averages_stops([8192, 8193], "71C", october_dates))
     # print(filtered_wait_time_averages_line("71C"))
     # print(filtered_wait_time_averages_line("71C",october_dates))
