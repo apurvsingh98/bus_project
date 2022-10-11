@@ -51,6 +51,10 @@ class QueryDB:
         scraped_days = cursor.fetchall()
         connection.commit()
 
+        for i in range(len(scraped_days)):
+            day = scraped_days[i]
+            scraped_days[i] = day[0]
+
         return scraped_days
 
     @staticmethod
@@ -86,4 +90,4 @@ class QueryDB:
 
         connection.commit()
 
-QueryDB.count_data()
+# QueryDB.count_data()

@@ -165,6 +165,9 @@ def delete_data_window():
         if choice1 == 'DATES':
             delete_by_dates()
 
+def get_avg_frequency_for_all():
+
+
 
 def explore_window():
     exp_choice = int(input('Welcome to the explore window. Enter RETURN to return to the main menu. '
@@ -178,10 +181,11 @@ def explore_window():
         print('Calculating average frequency...')
         scraped_stops = QueryDB.get_scraped_stops()
         scraped_routes = QueryDB.get_scraped_routes()
+        scraped_days = QueryDB.get_scraped_days
 
         averages = []
         for route in scraped_routes:
-            averages.append(filtered_wait_time_averages_stops(scraped_stops, route, ['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06']))
+            averages.append(filtered_wait_time_averages_stops(scraped_stops, route, scraped_days))
 
         for dict_list in averages:
             for key, value in dict_list.items():
