@@ -44,6 +44,19 @@ class QueryDB:
         return scraped_stops
 
     @staticmethod
+    def get_scraped_stops_with_names():
+        connection = sqlite3.Connection('transit_data.db')
+        cursor = connection.cursor()
+        cursor.execute("""SELECT DISTINCT(STOP_ID), STOP_NAME, ROUTE_ID, ROUTE_NAME
+                        FROM STOPS JOIN ESTIMATES USING(STOP_ID)
+                        LEFT JOIN ROUTES USING(ROUTE_ID)                       
+                        ORDER BY STOP_NAME""")
+        scraped_stops = cursor.fetchall()
+        connection.commit()
+
+        return scraped_stops
+
+    @staticmethod
     def get_scraped_days():
         connection = sqlite3.Connection('transit_data.db')
         cursor = connection.cursor()
