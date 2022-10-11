@@ -170,8 +170,7 @@ def filtered_wait_time_averages_line(*args):
 
 
 def main():
-    october_dates = ['2022-10-0' + str(i) for i in range(1, 7)]
-    print(filtered_wait_time_averages_stops([8192, 8193], "71C", october_dates))
+    print(filtered_wait_time_averages_stops([8192, 8193], "71C", ['2022-10-04', '2022-10-05', '2022-10-06', '2022-10-07', '2022-10-08',  '2022-10-09', '2022-10-10']))
     # print(filtered_wait_time_averages_line("71C"))
     # print(filtered_wait_time_averages_line("71C",october_dates))
     # wait_time_generator(8192,"71C")

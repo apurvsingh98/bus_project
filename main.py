@@ -221,12 +221,18 @@ def get_avg_frequency_by_criteria():
 
     print('Calculating average frequency based on entered parameters...')
 
-    # Pass three parameter to this module. Each should either be a list of values, or a value indicating "all."
-    averages = filtered_wait_time_averages_stops(stop_list, route, limit_by_days)
+    # Find the days for which we have data which are not in the list of selected dates.
+    scraped_days_list = QueryDB.get_scraped_days()
+    scraped_days_set = set(scraped_days_list)
+    days_we_want = scraped_days_set - limit_by_days
 
-    for dict_list in averages:
-        for key, value in dict_list.items():
-            print(f'The average frequency at stop: {key} over the selected period is {value}')
+    # Pass three parameter to this module. Each should either be a list of values, or an empty indicating "all" for that criterion
+    averages = filtered_wait_time_averages_stops(stop_list, route, list(days_we_want))
+    print(averages)
+    if averages:
+        for dict_list in averages:
+            for key, value in dict_list.items():
+                print(f'The average frequency at stop: {key} over the selected period is {value}')
 
 
 def explore_window():
