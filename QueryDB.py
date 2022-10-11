@@ -76,7 +76,9 @@ class QueryDB:
         # GROUP BY stop_id
         # ORDER BY STOP_NAME DESC""")
 
-        cursor.execute("""SELECT * FROM ESTIMATES WHERE SUBSTR(TIME_CHECKED, 1, 13) = '2022-10-08 14'""")
+        # cursor.execute("""SELECT * FROM ESTIMATES WHERE SUBSTR(TIME_CHECKED, 1, 13) = '2022-10-08 14'""")
+
+        cursor.execute("""SELECT * FROM ESTIMATES WHERE STOP_ID = 9334""")
 
         results = cursor.fetchall()
         for r in results:
@@ -84,4 +86,4 @@ class QueryDB:
 
         connection.commit()
 
-# QueryDB.count_data()
+QueryDB.count_data()

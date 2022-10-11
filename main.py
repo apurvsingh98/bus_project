@@ -3,6 +3,7 @@ import timeit
 import time
 from UpdateDB import UpdateDB
 from QueryDB import QueryDB
+from DeleteDBRecords import DeleteDBRecords
 from avg_wait_time_generator import filtered_wait_time_averages_stops
 from weather_func import get_matching_weather_dates
 
@@ -83,9 +84,11 @@ def delete_data_window():
             return
 
         if choice1 == 'DELETE ALL':
-            print('Deleting all previously scraped data...')
-            # DROP ESTIMATES TABLE
-            print('Sucessfully deleted!')
+            final_delete_choice = input("Are you sure you want to delete all previously scraped data (Y/N)?")
+            if final_delete_choice == 'Y':
+                print('Deleting all previously scraped data...')
+                DeleteDBRecords.wipe_estimates_table()
+                print('Sucessfully deleted!')
 
         if choice1 == 'STOP_ID':
             print('Currently you have these stops in your database:\n')
@@ -137,7 +140,7 @@ def explore_window():
             averages.append(filtered_wait_time_averages_stops(scraped_stops, route, ['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06']))
 
         for dict_list in averages:
-            for key, value in averages.items():
+            for key, value in dict_list.items():
                 print(f'The average frequency at stop: {key} over the selected period is {value}')
 
     if exp_choice == 2:
@@ -176,7 +179,7 @@ def explore_window():
         averages = filtered_wait_time_averages_stops([8192,8193],"71C",['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06'])
 
         for dict_list in averages:
-            for key, value in averages.items():
+            for key, value in dict_list.items():
                 print(f'The average frequency at stop: {key} over the selected period is {value}')
 
 if __name__ == '__main__':
