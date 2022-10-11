@@ -36,6 +36,10 @@ class QueryDB:
         scraped_stops = cursor.fetchall()
         connection.commit()
 
+        for i in range(len(scraped_stops)):
+            # Index scraped_stops at [0] because scraped_stops is a list of one-tuples.
+            scraped_stops[i] = str(scraped_stops[i][0])
+
         return scraped_stops
 
     @staticmethod
@@ -71,10 +75,12 @@ class QueryDB:
         # GROUP BY stop_id
         # ORDER BY STOP_NAME DESC""")
 
-        cursor.execute("""SELECT * FROM ESTIMATES WHERE STOP_ID = 2565 AND ROUTE_ID = '71A' LIMIT 1000""")
+        cursor.execute("""SELECT * FROM ESTIMATES WHERE SUBSTR(TIME_CHECKED, 1, 13) = '2022-10-08 14'""")
 
         results = cursor.fetchall()
         for r in results:
             print(r)
 
         connection.commit()
+
+QueryDB.count_data()
