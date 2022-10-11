@@ -122,29 +122,29 @@ def delete_data_window():
 def explore_window():
     exp_choice = int(input('Welcome to the explore window. Enter RETURN to return to the main menu. '
                            '\nEnter 1 or 2 to select an option:\n1) Get average frequency '
-                           'for all data in your database.\n2) Select filters.'))
+                           'for all data in your database.\n2) Select filters.\n'))
 
     if exp_choice == 'RETURN':
         return
 
     if exp_choice == 1:
-        # Hardcoded demo values
         print('Calculating average frequency...')
         scraped_stops = QueryDB.get_scraped_stops()
         scraped_routes = QueryDB.get_scraped_routes()
 
-        for i in range(len(scraped_stops)):
-            scraped_stops[i] = int(scraped_stops[i][0])
+        averages = []
+        for route in scraped_routes:
+            averages.append(filtered_wait_time_averages_stops(scraped_stops, route, ['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06']))
 
-        averages = filtered_wait_time_averages_stops(scraped_stops,"71C",['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06'])
-        for key, value in averages.items():
-            print(f'The average frequency at stop: {key} over the selected period is {value}')
+        for dict_list in averages:
+            for key, value in averages.items():
+                print(f'The average frequency at stop: {key} over the selected period is {value}')
 
     if exp_choice == 2:
         sports_op = input("Filter by days when sports games are happening in the area? (YES/NO): ")
 
         weather_op = int(input("Filter by weather? Your options are (enter an int):\n1) Don't filter by weather.\n"
-                           "2) Filter by weather similar to today. 3) Filter by weather similar to a specific, other day.\n"))
+                           "2) Filter by weather similar to today.\n3) Filter by weather similar to a specific, other day.\n"))
 
         weather_dates = []
         if weather_op == 2:
@@ -175,8 +175,9 @@ def explore_window():
         # Pass three parameter to this module. Each should either be a list of values, or a value indicating "all."
         averages = filtered_wait_time_averages_stops([8192,8193],"71C",['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06'])
 
-        for key, value in averages.items():
-            print(f'The average frequency at stop: {key} over the selected period is {value}')
+        for dict_list in averages:
+            for key, value in averages.items():
+                print(f'The average frequency at stop: {key} over the selected period is {value}')
 
 if __name__ == '__main__':
     main()
