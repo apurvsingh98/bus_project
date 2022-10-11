@@ -228,11 +228,10 @@ def get_avg_frequency_by_criteria():
 
     # Pass three parameter to this module. Each should either be a list of values, or an empty indicating "all" for that criterion
     averages = filtered_wait_time_averages_stops(stop_list, route, list(days_we_want))
-    print(averages)
+
     if averages:
-        for dict_list in averages:
-            for key, value in dict_list.items():
-                print(f'The average frequency at stop: {key} over the selected period is {value}')
+        for key, value in averages.items():
+            print(f'The average frequency at stop: {key} over the selected period is {value}')
 
 
 def explore_window():
