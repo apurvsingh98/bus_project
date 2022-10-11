@@ -1,9 +1,6 @@
 import sqlite3
 from scrape_truetime import get_stop_list
 
-# Author: Jack Vandeleuv
-# Knights of Ni Project
-
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Calling the init_db function will delete/drop any existing database with the same name in its directory!
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

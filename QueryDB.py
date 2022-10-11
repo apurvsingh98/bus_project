@@ -1,9 +1,5 @@
 import sqlite3
 
-# Author: Jack Vandeleuv
-# Knights of Ni Project
-
-
 class QueryDB:
     def __init__(self):
         pass
@@ -44,14 +40,26 @@ class QueryDB:
         return scraped_stops
 
     @staticmethod
-    def get_scraped_stops_with_names():
+    def get_scraped_stops_based_on_route(route):
+        assert type(route) == str
+
         connection = sqlite3.Connection('transit_data.db')
         cursor = connection.cursor()
-        cursor.execute("""SELECT DISTINCT(STOP_ID), STOP_NAME, ROUTE_ID, ROUTE_NAME
-                        FROM STOPS JOIN ESTIMATES USING(STOP_ID)
-                        LEFT JOIN ROUTES USING(ROUTE_ID)                       
-                        ORDER BY STOP_NAME""")
+
+        cursor.execute("SELECT STOP_ID, STOP_NAME "
+                       "FROM STOPS JOIN ESTIMATES USING(STOP_ID) "
+                       "WHERE ROUTE_ID = '" + route + "' "
+                       "GROUP BY STOP_ID, STOP_NAME ORDER BY STOP_NAME")
         scraped_stops = cursor.fetchall()
+
+        for i in range(len(scraped_stops)):
+            # Pull out each individual stop_id/stop_name combo and turn the two-tuple into a list.
+            scraped_stop_list = list(scraped_stops[i])
+            # Convert each stop id into an int
+            scraped_stop_list[0] = int(scraped_stop_list[0])
+            # Insert the new list back into the data.
+            scraped_stops[i] = scraped_stop_list
+
         connection.commit()
 
         return scraped_stops

@@ -167,19 +167,19 @@ def delete_data_window():
             delete_by_dates()
 
 # This function is not currently being called because we disabled option 1 in window 3 (it was taking too long to run)
-def get_avg_frequency_for_all():
-    print('Calculating average frequency...')
-    scraped_stops = QueryDB.get_scraped_stops()
-    scraped_routes = QueryDB.get_scraped_routes()
-    scraped_days = QueryDB.get_scraped_days
-
-    averages = []
-    for route in scraped_routes:
-        averages.append(filtered_wait_time_averages_stops(scraped_stops, route, scraped_days))
-
-    for dict_list in averages:
-        for key, value in dict_list.items():
-            print(f'The average frequency at stop: {key} over the selected period is {value}')
+# def get_avg_frequency_for_all():
+#     print('Calculating average frequency...')
+#     scraped_stops = QueryDB.get_scraped_stops()
+#     scraped_routes = QueryDB.get_scraped_routes()
+#     scraped_days = QueryDB.get_scraped_days()
+#
+#     averages = []
+#     for route in scraped_routes:
+#         averages.append(filtered_wait_time_averages_stops(scraped_stops, route, scraped_days))
+#
+#     for dict_list in averages:
+#         for key, value in dict_list.items():
+#             print(f'The average frequency at stop: {key} over the selected period is {value}')
 
 
 def get_avg_frequency_by_criteria():
@@ -205,25 +205,7 @@ def get_avg_frequency_by_criteria():
             if len(weather_date) == 10 and type(weather_date) == str:
                 limit_by_days.add(weather_date)
 
-    see_stops = input("Would you like to see a list of available stops (with associated routes) in your database of scraped data? (YES/NO): ")
 
-    if see_stops == "YES":
-        scraped_stops = QueryDB.get_scraped_stops_with_names()
-        for stop in scraped_stops:
-            print(stop)
-
-    stop_op = input("Select data from these stops (Separate your stop_ids with commas. If you want them all, enter ALL):")
-
-    if stop_op == 'ALL':
-        stop_list = QueryDB.get_scraped_stops
-
-    if stop_op != 'ALL':
-        if ',' in stop_op:
-            stop_list = stop_op.split(',')
-            for i in range(len(stop_list)):
-                stop_list[i] = int(stop_list[i].strip())
-        if ',' not in stop_op:
-            stop_list = [int(stop_op.strip())]
 
     print("\nThe routes you have scraped data for in your database are:")
     scraped_routes = QueryDB.get_scraped_routes()
@@ -233,6 +215,32 @@ def get_avg_frequency_by_criteria():
     route_op = input("Select a route (you can only select one route, and you must select one): ")
 
     route = route_op.strip()
+
+
+
+    see_stops = input("Would you like to see a list of available stops (with associated routes) in your database of scraped data? (YES/NO): ")
+
+    if see_stops == "YES":
+        scraped_stops = QueryDB.get_scraped_stops_based_on_route(route)
+        for stop in scraped_stops:
+            id = stop[0]
+            name = stop[1]
+            print(f'You have data for Stop {id} aka {name} on Route {route}')
+
+    stop_op = input("Select data from these stops (Separate your stop_ids with commas. If you want them all, enter ALL):")
+
+    if stop_op == 'ALL':
+        stops_and_names = QueryDB.get_scraped_stops_based_on_route(route)
+        stop_list = [x[0] for x in stops_and_names]
+        print(stop_list)
+
+    if stop_op != 'ALL':
+        if ',' in stop_op:
+            stop_list = stop_op.split(',')
+            for i in range(len(stop_list)):
+                stop_list[i] = int(stop_list[i].strip())
+        if ',' not in stop_op:
+            stop_list = [int(stop_op.strip())]
 
     print('Calculating average frequency based on entered parameters...')
 

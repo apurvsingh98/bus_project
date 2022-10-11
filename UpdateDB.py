@@ -6,8 +6,6 @@ import re
 import datetime
 import cchardet as chardet  # This library speeds up html parsing
 
-# Author: Jack Vandeleuv
-# Knights of Ni Project
 
 # This class allows you to continuously scrape TrueTime for minute-by-minute bus arrival estimates. It adds the
 # resulting data into the transit_data.db database.
