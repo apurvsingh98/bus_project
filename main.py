@@ -180,6 +180,48 @@ def get_avg_frequency_for_all():
             print(f'The average frequency at stop: {key} over the selected period is {value}')
 
 
+def get_avg_frequency_by_criteria():
+    sports_op = input("Filter by days when sports games are happening in the area? (YES/NO): ")
+
+    weather_op = int(input("Filter by weather? Your options are (enter an int):\n1) Don't filter by weather.\n"
+                           "2) Filter by weather similar to today.\n3) Filter by weather similar to a specific, other day.\n"))
+
+    weather_dates = []
+    if weather_op == 2:
+        weather_dates = get_matching_weather_dates()
+
+    if weather_op == 3:
+        weather_dates = get_matching_weather_dates()  # Modify this later to include the specific dates from user input
+
+    stop_op = input("Only select data from these stops (separate stop_id with commas; if all enter ALL): ")
+
+    stop_list = stop_op.split(',')
+    for i in range(len(stop_list)):
+        stop_list[i] = int(stop_list[i])
+
+    route_op = input("Only select data from these routes (separate route_id with commas; if all enter ALL): ")
+
+    route_list = route_op.split(',')
+    for i in range(len(route_list)):
+        route_list[i] = int(route_list[i])
+
+    # Sports function will return a set of dates.
+    # Weather function will return a set of dates
+    # User will select some set of stops.
+    # User will select some set of routes.
+
+    print('Calculating average frequency based on entered parameters...')
+
+    # Pass three parameter to this module. Each should either be a list of values, or a value indicating "all."
+    averages = filtered_wait_time_averages_stops([8192, 8193], "71C",
+                                                 ['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05',
+                                                  '2022-10-06'])
+
+    for dict_list in averages:
+        for key, value in dict_list.items():
+            print(f'The average frequency at stop: {key} over the selected period is {value}')
+
+
 def explore_window():
     exp_choice = int(input('Welcome to the explore window. Enter RETURN to return to the main menu. '
                            '\nEnter 1 or 2 to select an option:\n1) Get average frequency '
@@ -192,43 +234,8 @@ def explore_window():
         get_avg_frequency_for_all()
 
     if exp_choice == 2:
-        sports_op = input("Filter by days when sports games are happening in the area? (YES/NO): ")
+        get_avg_frequency_by_criteria()
 
-        weather_op = int(input("Filter by weather? Your options are (enter an int):\n1) Don't filter by weather.\n"
-                           "2) Filter by weather similar to today.\n3) Filter by weather similar to a specific, other day.\n"))
-
-        weather_dates = []
-        if weather_op == 2:
-            weather_dates = get_matching_weather_dates()
-
-        if weather_op == 3:
-            weather_dates = get_matching_weather_dates()  # Modify this later to include the specific dates from user input
-
-        stop_op = input("Only select data from these stops (separate stop_id with commas; if all enter ALL): ")
-
-        stop_list = stop_op.split(',')
-        for i in range(len(stop_list)):
-            stop_list[i] = int(stop_list[i])
-
-        route_op = input("Only select data from these routes (separate route_id with commas; if all enter ALL): ")
-
-        route_list = route_op.split(',')
-        for i in range(len(route_list)):
-            route_list[i] = int(route_list[i])
-
-        # Sports function will return a set of dates.
-        # Weather function will return a set of dates
-        # User will select some set of stops.
-        # User will select some set of routes.
-
-        print('Calculating average frequency based on entered parameters...')
-
-        # Pass three parameter to this module. Each should either be a list of values, or a value indicating "all."
-        averages = filtered_wait_time_averages_stops([8192,8193],"71C",['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05', '2022-10-06'])
-
-        for dict_list in averages:
-            for key, value in dict_list.items():
-                print(f'The average frequency at stop: {key} over the selected period is {value}')
 
 if __name__ == '__main__':
     main()
