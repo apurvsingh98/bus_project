@@ -6,6 +6,7 @@ from QueryDB import QueryDB
 from DeleteDBRecords import DeleteDBRecords
 from avg_wait_time_generator import filtered_wait_time_averages_stops
 from weather_func import get_matching_weather_dates
+from sports import get_sports_schedule
 
 
 # Main module.
@@ -181,41 +182,47 @@ def get_avg_frequency_for_all():
 
 
 def get_avg_frequency_by_criteria():
+    # Limit by these days. Set should be a set of strings, one string per date.
+    limit_by_days = set()
+
     sports_op = input("Filter by days when sports games are happening in the area? (YES/NO): ")
 
-    weather_op = int(input("Filter by weather? Your options are (enter an int):\n1) Don't filter by weather.\n"
-                           "2) Filter by weather similar to today.\n3) Filter by weather similar to a specific, other day.\n"))
+    if sports_op == 'YES':
+        sports_dict = get_sports_schedule()
+        for dictionary in sports_dict:
+            for key in dictionary:
+                # Validate input for correct date format.
+                if len(key) == 10 and type(key) == str:
+                    limit_by_days.add(key)
+
+    weather_op = input("Filter by weather similar to today? (YES/NO)")
 
     weather_dates = []
-    if weather_op == 2:
+    if weather_op == 'YES':
         weather_dates = get_matching_weather_dates()
+        for weather_date in weather_dates:
+            if len(weather_date) == 10 and type(weather_date) == str:
+                limit_by_days.add(weather_date)
 
-    if weather_op == 3:
-        weather_dates = get_matching_weather_dates()  # Modify this later to include the specific dates from user input
+    print('limit_by_days', limit_by_days)
 
     stop_op = input("Only select data from these stops (separate stop_id with commas; if all enter ALL): ")
 
-    stop_list = stop_op.split(',')
-    for i in range(len(stop_list)):
-        stop_list[i] = int(stop_list[i])
+    if ',' in stop_op:
+        stop_list = stop_op.split(',')
+        for i in range(len(stop_list)):
+            stop_list[i] = int(stop_list[i].strip())
+    if ',' not in stop_op:
+        stop_list = [int(stop_op.strip())]
 
-    route_op = input("Only select data from these routes (separate route_id with commas; if all enter ALL): ")
+    route_op = input("Select a route (you can only select one route, and you must select one): ")
 
-    route_list = route_op.split(',')
-    for i in range(len(route_list)):
-        route_list[i] = int(route_list[i])
-
-    # Sports function will return a set of dates.
-    # Weather function will return a set of dates
-    # User will select some set of stops.
-    # User will select some set of routes.
+    route = route_op.strip()
 
     print('Calculating average frequency based on entered parameters...')
 
     # Pass three parameter to this module. Each should either be a list of values, or a value indicating "all."
-    averages = filtered_wait_time_averages_stops([8192, 8193], "71C",
-                                                 ['2022-10-01', '2022-10-02', '2022-10-03', '2022-10-04', '2022-10-05',
-                                                  '2022-10-06'])
+    averages = filtered_wait_time_averages_stops(stop_list, route, limit_by_days)
 
     for dict_list in averages:
         for key, value in dict_list.items():
