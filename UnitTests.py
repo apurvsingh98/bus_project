@@ -51,7 +51,7 @@ class TestAvgWaitTimeGenerator(unittest.TestCase):
          [17.897337383333333, 8192, '71C', 3417, '2022-10-10 10:23:37.948507', '2022-10-10']
         ]
 
-        try8192 = wait_time_generator('8192', '71C')
+        try8192 = wait_time_generator(8192, '71C')
         self.assertEqual(try8192, frequencies1)
 
     def test_wait_time_generator_8193(self):
@@ -95,7 +95,7 @@ class TestAvgWaitTimeGenerator(unittest.TestCase):
          [11.488660366666666, 8193, '71C', 7101, '2022-10-10 09:14:58.225271', '2022-10-10'],
          [15.691837016666666, 8193, '71C', 6553, '2022-10-10 09:30:39.735492', '2022-10-10']]
 
-        try8193 = wait_time_generator('8193', '71C')
+        try8193 = wait_time_generator(8193, '71C')
         self.assertEqual(try8193, frequencies2)
 
     def test_wait_time_generator_main(self):

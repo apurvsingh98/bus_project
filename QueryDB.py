@@ -38,7 +38,8 @@ class QueryDB:
 
         for i in range(len(scraped_stops)):
             # Index scraped_stops at [0] because scraped_stops is a list of one-tuples.
-            scraped_stops[i] = str(scraped_stops[i][0])
+            stop = scraped_stops[i]
+            scraped_stops[i] = stop[0]
 
         return scraped_stops
 
@@ -83,4 +84,4 @@ class QueryDB:
 
         connection.commit()
 
-QueryDB.count_data()
+# QueryDB.count_data()
