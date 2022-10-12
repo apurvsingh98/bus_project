@@ -1,9 +1,11 @@
 import sqlite3
 
+# This class allows us to make basic queries from our database to assist various parts of the application.
 class QueryDB:
     def __init__(self):
         pass
 
+    # Returns all routes contained in the ROUTES table. This should be every route listed on the TrueTime website.
     @staticmethod
     def get_available_routes():
         connection = sqlite3.Connection('transit_data.db')
@@ -14,6 +16,7 @@ class QueryDB:
 
         return available_routes
 
+    # Get only those routes for which we have scraped ETA data.
     @staticmethod
     def get_scraped_routes():
         connection = sqlite3.Connection('transit_data.db')
@@ -24,6 +27,7 @@ class QueryDB:
 
         return scraped_routes
 
+    # Get only those stops for which we have scraped ETA data.
     @staticmethod
     def get_scraped_stops():
         connection = sqlite3.Connection('transit_data.db')
@@ -32,13 +36,14 @@ class QueryDB:
         scraped_stops = cursor.fetchall()
         connection.commit()
 
+        # Format the result to remove the tuples wrapped around the STOP_IDs.
         for i in range(len(scraped_stops)):
-            # Index scraped_stops at [0] because scraped_stops is a list of one-tuples.
             stop = scraped_stops[i]
             scraped_stops[i] = stop[0]
 
         return scraped_stops
 
+    # Get only those stops which we have ETA data for and that match a particular route (which should be a single str).
     @staticmethod
     def get_scraped_stops_based_on_route(route):
         assert type(route) == str
@@ -64,6 +69,7 @@ class QueryDB:
 
         return scraped_stops
 
+    # Get all dates for which we have scraped ETA data. Each date is a str, formatted like '2022-10-10'.
     @staticmethod
     def get_scraped_days():
         connection = sqlite3.Connection('transit_data.db')
@@ -78,6 +84,7 @@ class QueryDB:
 
         return scraped_days
 
+    # Return a single tuple, containing the count of all the rows in our ESTIMATES table.
     @staticmethod
     def count_estimates():
         connection = sqlite3.Connection('transit_data.db')
@@ -88,8 +95,9 @@ class QueryDB:
 
         return estimate_count
 
+    # Function to make quick queries for debugging.
     @staticmethod
-    def test_data():
+    def __test_data():
         # Here's the boilerplate code needed to query the database.
         connection = sqlite3.Connection('transit_data.db')
         cursor = connection.cursor()
@@ -101,5 +109,3 @@ class QueryDB:
             print(r)
 
         connection.commit()
-
-# QueryDB.test_data()
