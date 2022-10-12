@@ -4,7 +4,6 @@ import bs4
 import requests
 import re
 import datetime
-import cchardet as chardet  # This library speeds up html parsing
 
 
 # This class allows you to continuously scrape TrueTime for minute-by-minute bus arrival estimates. It adds the

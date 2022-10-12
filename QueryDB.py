@@ -89,21 +89,12 @@ class QueryDB:
         return estimate_count
 
     @staticmethod
-    def count_data():
+    def test_data():
         # Here's the boilerplate code needed to query the database.
         connection = sqlite3.Connection('transit_data.db')
         cursor = connection.cursor()
 
-        # cursor.execute("""SELECT AVG(ETA) FROM ESTIMATES WHERE ETA != 'DUE' AND STOP_ID = 8192 AND ROUTE_ID = '71A'""")
-        # cursor.execute("""SELECT ROUTE_ID, STOP_ID, STOP_NAME, DIRECTION, AVG(ETA), COUNT(ID)
-        # FROM ESTIMATES JOIN STOPS USING(STOP_ID)
-        # WHERE ROUTE_ID = "71A"
-        # GROUP BY stop_id
-        # ORDER BY STOP_NAME DESC""")
-
-        # cursor.execute("""SELECT * FROM ESTIMATES WHERE SUBSTR(TIME_CHECKED, 1, 13) = '2022-10-08 14'""")
-
-        cursor.execute("""SELECT COUNT(ID) FROM ESTIMATES""")
+        cursor.execute("""SELECT COUNT(STOP_ID) FROM STOPS""")
 
         results = cursor.fetchall()
         for r in results:
@@ -111,4 +102,4 @@ class QueryDB:
 
         connection.commit()
 
-# QueryDB.count_data()
+QueryDB.test_data()

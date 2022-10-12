@@ -2,6 +2,7 @@ import UpdateDB
 import timeit
 import time
 from UpdateDB import UpdateDB
+from CreateDB import CreateDB
 from QueryDB import QueryDB
 from DeleteDBRecords import DeleteDBRecords
 from avg_wait_time_generator import filtered_wait_time_averages_stops
@@ -41,10 +42,18 @@ def scrape_window():
 
     while not request_return:
         choice1 = input("\nWelcome to the scrape menu. Enter 'RETURN' to return to the main menu.\nTo see a list of "
-                        "routes that are available to scrape, enter ROUTES. To begin scraping, enter the lines you "
-                        "would like to scrape separated by commas, like so: 71A, 71C, 65\n")
+                        "routes that are available to scrape, enter ROUTES.\n\nIf you want to update the routes in your "
+                        "database based on the Pittsburgh Port Authority's TrueTime website, enter RESET STOPS AND "
+                        "ROUTES. This could take a while!\n\nTo begin scraping, enter the lines you would like to scrape "
+                        "separated by commas, like so: 71A, 71C, 65\n")
 
         if choice1 == 'RETURN':
+            return
+
+        if choice1 == 'RESET STOPS AND ROUTES':
+            print("Scraping the TrueTime website to find an updated set of stops and routes...\n")
+            CreateDB.reset_db_with_new_stops_n_routes()
+            print("Done. You database has been updated with the latest routes/stops to scrape!\n")
             return
 
         if choice1 == 'ROUTES':
@@ -57,7 +66,7 @@ def scrape_window():
             for i in range(len(routes_to_scrape)):
                 routes_to_scrape[i] = routes_to_scrape[i].strip()
 
-            n_iters = int(input("""Got it! How many times would you like to scrape the TrueTime website? On average, it takes about 30 per route, per scrape. Enter an int: """))
+            n_iters = int(input("""Got it! How many times would you like to scrape the TrueTime website? On average, it takes about 1 minute per route, per scrape. Enter an int: """))
             print(f'Scraping {routes_to_scrape}, {n_iters} times...')
 
             cnt = 0
@@ -148,7 +157,7 @@ def delete_data_window():
         n_records = QueryDB.count_estimates()[0][0]
 
         choice1 = input(f"\nWelcome to the delete menu. Enter 'RETURN' to return to the main menu.\n"
-                        f"You currently have {n_records} scraped datapoints in your database. "
+                        f"You currently have {n_records} scraped data points in your database."
                         "To delete data, enter DELETE ALL, or pick what criteria you'd like to delete by: STOP_ID, ROUTE_ID, DATES: ")
 
         if choice1 == 'RETURN':

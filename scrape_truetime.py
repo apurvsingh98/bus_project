@@ -6,7 +6,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import bs4
 import re
-from typing import List
 
 # Author: Jack Vandeleuv
 # Knights of Ni Project
@@ -41,7 +40,7 @@ def check_available_directions(route_num: str) -> (bool, bool):
 
 # This function takes in a url and HTML tag, and then scrapes the url for the given tag. It returns a list of strings,
 # which contains every string found inside the given tag at the given url.
-def scrape_html_tag(url, tag: str) -> List[str]:
+def scrape_html_tag(url, tag):
     page = requests.get(url)
     # Specify lxml parser to avoid different default parsers on different machines
     soup_object = bs4.BeautifulSoup(page.text, features='lxml')
@@ -83,7 +82,7 @@ def zip_stop_id_and_name(url: str, direction: str, r_num: str, r_name: str) -> d
 
 # This function take a URL and an HTML class name as input, and outputs a list of strings containing all the information
 # found under the given url and class tag. Unlike bs4, Selenium works for content served dynamically by JavaScript.
-def scrape_dynamic_tag(url, class_name: str) -> List[str]:
+def scrape_dynamic_tag(url, class_name):
     # This is boilerplate code that initializes a Chrome web driver for use by the Selenium library.
     options = Options()
     options.add_argument('--headless')
@@ -105,14 +104,14 @@ def scrape_dynamic_tag(url, class_name: str) -> List[str]:
 # each line/direction combination (e.g. 71A OUTBOUND). Each key in each dict represents a unique bus stop/bus route
 # combination. Most bus stops have multiple lines that stop there, so between the different dicts there are identical
 # keys.
-def get_stop_list() -> List[dict]:
+def get_stop_list():
     url = 'https://truetime.portauthority.org/bustime/wireless/html/home.jsp'
-    routes: List[str] = scrape_dynamic_tag(url, 'larger')  # Scrape the route names
+    routes = scrape_dynamic_tag(url, 'larger')  # Scrape the route names
 
     list_of_dicts = []
 
     for route in routes:
-        print('Now Scraping Route:', route)
+        print('Now scraping information from this route:', route)
         r_elements = route.split('-')  # Split the route to get the route num, and route name
         r_name = r_elements[1].strip()
         r_num = r_elements[0].strip()  # The 0-index item in the list is the number
