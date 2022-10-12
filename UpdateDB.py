@@ -57,10 +57,12 @@ class UpdateDB:
 
         # Specify lxml parser to avoid different default parsers on different machines
         soup_object = bs4.BeautifulSoup(page.text, features='lxml')
+        # Find all elements matching the given tag on the page.
         tagged_elements = soup_object.find_all(attribute, {'class': tag})
 
         result = []
         for element in tagged_elements:
+            # Pull out the text inside each of the selected HTML tags.
             result.append(element.getText())
 
         return result
