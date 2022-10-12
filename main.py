@@ -7,7 +7,7 @@ from DeleteDBRecords import DeleteDBRecords
 from avg_wait_time_generator import filtered_wait_time_averages_stops
 from weather_func import get_matching_weather_dates
 from sports import get_sports_schedule
-from CalcOnTimePercentage import CalcOnTimePercentage
+from get_on_time_percent import get_on_time_percent
 
 # Main module.
 def main():
@@ -240,19 +240,22 @@ def get_avg_frequency_by_criteria():
 
     print('Calculating average frequency based on entered parameters...')
 
-    CalcOnTimePercentage()
-
     # Find the days for which we have data which are not in the list of selected dates.
     scraped_days_list = QueryDB.get_scraped_days()
     scraped_days_set = set(scraped_days_list)
-    days_we_want = scraped_days_set - limit_by_days
+    days_we_want = list(scraped_days_set - limit_by_days)
+
+    official_on_times = get_on_time_percent(days_we_want, route)
 
     # Pass three parameter to this module. Each should either be a list of values, or an empty indicating "all" for that criterion
-    averages = filtered_wait_time_averages_stops(stop_list, route, list(days_we_want))
+    averages = filtered_wait_time_averages_stops(stop_list, route, days_we_want)
 
     if averages:
         for key, value in averages.items():
             print(f'The average frequency at stop: {key} over the selected period is {value}')
+        for key, value in official_on_times.items():
+            print(f'\nOver the last five years, the officially-reported average on-time percents in {key} were:\n'
+                  f'Saturdays: {value.loc["SAT."]}\nSundays: {value.loc["SUN."]}\nWeekdays: {value.loc["WEEKDAY"]}')
 
 
 def explore_window():
