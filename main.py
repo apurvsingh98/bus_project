@@ -1,4 +1,3 @@
-import UpdateDB
 import timeit
 import time
 from UpdateDB import UpdateDB
