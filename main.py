@@ -1,4 +1,8 @@
 import timeit
+import time
+from tkinter import *
+import mainMenuUI as mainMenu
+import tkinter as tk
 from UpdateDB import UpdateDB
 from CreateDB import CreateDB
 from QueryDB import QueryDB
@@ -7,6 +11,7 @@ from avg_wait_time_generator import filtered_wait_time_averages_stops
 from weather_func import get_matching_weather_dates
 from sports import get_sports_schedule
 from get_on_time_percent import get_on_time_percent
+
 
 # Main function that controls the flow of the program.
 def main():
@@ -49,12 +54,27 @@ def main():
 def scrape_window():
     # Loop through the options in this sub-menu until the user requests to return to the main menu.
     while True:
-        choice1 = input("\nWelcome to the scrape menu. Enter 'RETURN' to return to the main menu.\nTo see a list of "
-                        "routes that are available to scrape, enter ROUTES. To begin scraping, enter the lines you "
-                        "would like to scrape separated by commas, like so: 71A, 71C, 65\n")
+        
+        #UI 
+        master = Tk()
+        master.withdraw()      
+        # the input dialog
+        choice1 = simpledialog.askstring(title="Test",
+                                  prompt=("\t\t\t\t\tWelcome to the scraping menu. \n\t\t\t\tTo see a list of "
+                                                  "routes that are available to scrape, enter ROUTES. \n\tTo begin scraping, enter the lines you "
+                                                  "would like to scrape separated by commas, like so: 71A, 71C, 65\n\n\t\t\t\t Enter 'RETURN' to return to the main menu."))
+        master.destroy()
+        
+        
+        #end of UI
+        
+        #choice1 = input("\nWelcome to the scrape menu. Enter 'RETURN' to return to the main menu.\nTo see a list of "
+         #               "routes that are available to scrape, enter ROUTES. To begin scraping, enter the lines you "
+          #              "would like to scrape separated by commas, like so: 71A, 71C, 65\n")
 
         if choice1 == 'RETURN':
-            return
+            mainMenu.main()
+            
 
         # If the user selects ROUTES, query the db for all routes where ESTIMATE data has been previouly scraped and
         # display those as options.
@@ -70,8 +90,24 @@ def scrape_window():
                 routes_to_scrape[i] = routes_to_scrape[i].strip()
 
             # Ask the user how many times they want to make a pass through the TrueTime website to scrape more data.
-            n_iters = int(input("""Got it! How many times would you like to scrape the TrueTime website? On average, 
-            it takes about 1 minute per route, per scrape. Enter an int: """))
+            
+            #UI
+            
+            master = Tk()
+            master.withdraw()      
+            # the input dialog
+            n_iters = simpledialog.askstring(title="Test",
+                                      prompt=("""Got it! How many times would you like to scrape the TrueTime website? On average, 
+                                      it takes about 1 minute per route, per scrape. Enter an int: """))
+            n_iters = int(n_iters)
+            
+            
+            
+            #end of UI
+            
+           # n_iters = int(input("""Got it! How many times would you like to scrape the TrueTime website? On average, 
+           # it takes about 1 minute per route, per scrape. Enter an int: """))
+            
             print(f'Scraping {routes_to_scrape}, {n_iters} times...')
 
             cnt = 0
@@ -84,8 +120,15 @@ def scrape_window():
                     # If data was returned successfully, enter it into the transit_data database.
                     UpdateDB.update_db(estimates)
                 stop = timeit.default_timer()
-                print('One scrape cycle completed, taking:', stop - start, ' seconds.')
+                
+                timeInfo = str(round((stop - start),2))
+                timeInfo = 'Scrape cycle {0} completed, taking: {1} seconds'.format((cnt+1),timeInfo) 
+                tk.messagebox.showinfo(title ='Scraping info', message = timeInfo)
+                
+                #print('One scrape cycle completed, taking:', stop - start, ' seconds.')
                 cnt += 1
+                
+    master.destroy()           
     print('Done scraping!')
 
 
