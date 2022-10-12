@@ -72,13 +72,6 @@ def scrape_window():
                 cnt += 1
     print('Done scraping!')
 
-def delete_all_estimates():
-    final_delete_choice = input("Are you sure you want to delete all previously scraped data (Y/N)?")
-    if final_delete_choice == 'Y':
-        print('Deleting all previously scraped data...')
-        DeleteDBRecords.wipe_estimates_table()
-        print('Sucessfully deleted!')
-
 def delete_by_stops():
     print('Currently you have these stops in your database:\n')
     stops = QueryDB.get_scraped_stops()

@@ -102,4 +102,4 @@ class QueryDB:
 
         connection.commit()
 
-QueryDB.test_data()
+# QueryDB.test_data()
