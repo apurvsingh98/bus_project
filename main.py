@@ -1,5 +1,4 @@
 import timeit
-import time
 from UpdateDB import UpdateDB
 from CreateDB import CreateDB
 from QueryDB import QueryDB
