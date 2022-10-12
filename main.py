@@ -79,7 +79,7 @@ def scrape_window():
                 # Time each loop so the user can see an updated count of how long each pass through the website takes.
                 start = timeit.default_timer()
                 # Use the scrape_estimates method to gather and process the data.
-                estimates = UpdateDB.scrape_estimates(['71C', '71A'])
+                estimates = UpdateDB.scrape_estimates(routes_to_scrape)
                 if estimates is not None:
                     # If data was returned successfully, enter it into the transit_data database.
                     UpdateDB.update_db(estimates)
