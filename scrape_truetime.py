@@ -7,18 +7,10 @@ from selenium.webdriver.chrome.options import Options
 import bs4
 import re
 
-# Author: Jack Vandeleuv
-# Knights of Ni Project
-
 # This module scrapes HTML pages from the Pittsburgh Port Authority TrueTime tool. The resulting dicts are then used by
-# the init_db module to create the routes and stops tables.
+# the CreateDB class to create the routes and stops tables.
 
-# Primary function is get_stop_list(). For this function:
-# Input: None
-# Output: get_stop_list() returns a list of dicts. There are 0-2 dicts per bus route, depending on whether INBOUND and
-#         OUTBOUND versions both exist for that route. Each dict has the following structure:
-#         {StopIDNumber: [StopName, Direction, RouteID, RouteName]
-
+# Primary function called by outside modules is get_stop_list().
 
 # This function checks the HTML page for a particular bus route, and determines whether the route includes INBOUND
 # buses, OUTBOUND buses, both, or neither. The result is two booleans values: outbound and inbound.
@@ -55,23 +47,31 @@ def scrape_html_tag(url, tag):
 # This function takes in a url, which should be the page on the TrueTime website which lists all the stops available for
 # a given route and direction. The function also takes in information about direction, route ID, route name. Using the
 # given URL, the function scrapes the ID and name of each bus stop, and packages it together with the other parameters
-# as a dict with the following structure for each key/value pair: {StopID: [StopName, Direction, RouteID, RouteName}
+# as a dict with the following structure for each key/value pair: {StopID: [StopName, Direction, RouteID, RouteName]}
 def zip_stop_id_and_name(url: str, direction: str, r_num: str, r_name: str) -> dict:
     page = requests.get(url)
     # Specify lxml parser to avoid different default parsers on different machines
     soup_object = bs4.BeautifulSoup(page.text, features='lxml')
+
+    # Find all links on the page.
     page_links = soup_object.find_all('a', attrs={'href': re.compile(r'^eta.jsp')})
 
     stop_info = {}
     for link in page_links:
         link_address = link.get('href')
+        # Strip off the end of the link using regex.
         end_of_link = re.search(r'id=Port\+Authority\+Bus%3A[0-9]+', link_address).group()
+        # Get the stop_id from the end_of_link str using regex. Exploit the fact that the str we want always starts with
+        # A.
         stop_id = re.search(r'A[0-9]+', end_of_link).group()
+        # Strip off the A.
         stop_id = stop_id[1:]
 
+        # Validate result, which should be str matching a numeric value (all official stop_ids are numbers).
         if not stop_id.isnumeric():
             raise Exception("Bad Stop Id!")
 
+        # Process stop_id and add to stop_info.
         stop_id = int(stop_id)
         stop_name_from_link = link.text
         stop_name = stop_name_from_link.strip()
@@ -85,13 +85,16 @@ def zip_stop_id_and_name(url: str, direction: str, r_num: str, r_name: str) -> d
 def scrape_dynamic_tag(url, class_name):
     # This is boilerplate code that initializes a Chrome web driver for use by the Selenium library.
     options = Options()
+    # Stop browser windows from actually popping up.
     options.add_argument('--headless')
+    # Install a browser for use by Selenium.
     service = Service(executable_path=ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
     driver.get(url)
 
     # Scrape the list of available routes from the TrueTime homepage using Selenium.
     result = []
+    # Search for elements in dynamically-served HTML matching certain tags.
     driver_result = driver.find_elements(By.CLASS_NAME, class_name)
     for r in driver_result:
         result.append(r.text)
@@ -104,9 +107,15 @@ def scrape_dynamic_tag(url, class_name):
 # each line/direction combination (e.g. 71A OUTBOUND). Each key in each dict represents a unique bus stop/bus route
 # combination. Most bus stops have multiple lines that stop there, so between the different dicts there are identical
 # keys.
+
+# Input: None
+# Output: get_stop_list() returns a list of dicts. There are 0-2 dicts per bus route, depending on whether INBOUND and
+#         OUTBOUND versions both exist for that route. Each dict has the following structure:
+#         {StopIDNumber: [StopName, Direction, RouteID, RouteName]
 def get_stop_list():
     url = 'https://truetime.portauthority.org/bustime/wireless/html/home.jsp'
-    routes = scrape_dynamic_tag(url, 'larger')  # Scrape the route names
+    # Scrape the route names
+    routes = scrape_dynamic_tag(url, 'larger')
 
     list_of_dicts = []
 
@@ -133,7 +142,8 @@ def get_stop_list():
     return list_of_dicts
 
 
-# This function uses bs4 to scrape static webpages for the purpose of learning what tags are available to scrape.
+# For debugging purposes. This function uses bs4 to scrape static webpages for the purpose of learning what tags are
+# available to scrape.
 def exploratory_scrape():
     url = f'https://truetime.portauthority.org/bustime/wireless/html/selectstop.jsp?route=Port+Authority+Bus%3A1&direction=Port+Authority+Bus%3AOUTBOUND'
     page = requests.get(url)
@@ -145,7 +155,8 @@ def exploratory_scrape():
     print(soup.prettify())
 
 
-# This function tests the output from get_stop_list() to see how many bus lines are associated with each bus stop.
+# For debugging purposes. This function tests the output from get_stop_list() to see how many bus lines are associated
+# with each bus stop.
 def test_results():
     cnt = 0
     list_of_dicts = get_stop_list()

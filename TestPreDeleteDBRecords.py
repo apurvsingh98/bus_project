@@ -2,9 +2,12 @@ import unittest
 import sqlite3
 from DeleteDBRecords import DeleteDBRecords
 
+# This unittest checks whether the DeleteDBRecords class is deleting data correctly. This test only works with the
+# 27,791,360 byte version of the test database, which has a known output.
 class TestAvgWaitTimeGenerator(unittest.TestCase):
 
-    # Check that there are records in the database to begin with
+    # Check that there is the correct number records in the database under each category before we try to delete
+    # anything.
     def test_records_in_db_by_dates(self):
         connection = sqlite3.Connection('transit_data.db')
         cur = connection.cursor()
