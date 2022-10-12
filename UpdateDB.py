@@ -14,18 +14,23 @@ class UpdateDB:
     def __init__(self):
         pass
 
-    # Private method that queries the database and packages the results together in a pandas Series of urls.
+    # Private method that queries the database and packages the results together in a pandas Series, with each value
+    # being a url.
     @staticmethod
     def __get_urls_to_query(lines):
+        # This is the start of the query, which we'll add to as we go.
         route_subclause = " WHERE ROUTE_ID IN (\""
 
+        # If we have one line/route, replace our initial route_subclause with a simpler clause filtering by one value.
         if len(lines) == 1:
             route_subclause = f' WHERE ROUTE_ID = "{lines[0]}"'
 
+        # If there are multiple routes to query, add together multiple values using the IN operator.
         if len(lines) > 1:
             cs_lines = '","'.join(lines)
             route_subclause = route_subclause + cs_lines + "\")"
 
+        # Query the DB.
         connection = sqlite3.Connection('transit_data.db')
         cursor = connection.cursor()
         query = 'SELECT ROUTE_ID, DIRECTION, STOP_ID FROM STOPS ' + 'JOIN STOPS_ON_ROUTES USING(STOP_ID) JOIN ROUTES USING(ROUTE_ID)' + route_subclause
@@ -35,7 +40,9 @@ class UpdateDB:
         connection.commit()
 
         urls_and_data = []
-        for result in results:  # 71A, OUTBOUND, 8382
+        # The URLs for the specific pages we want have three parts, route, direction, and stop_id in that order. We've
+        # gathered this information from our database, and now we can concatenate it into a URL.
+        for result in results:
             url = 'https://truetime.portauthority.org/bustime/wireless/html/' \
                   'eta.jsp?route=Port+Authority+Bus%3A' + result[0] + '&direction' \
                 '=Port+Authority+Bus%3A' + result[1] + '&id=Port+Authority+Bus%3A' + result[2] + '&showAllBusses=on'
@@ -43,7 +50,7 @@ class UpdateDB:
 
         return urls_and_data
 
-    # Private helper function that takes in a url and outputs scraped data.
+    # Private helper function that takes in a url and outputs scraped data based on a specified HTML tag.
     @staticmethod
     def scrape_html_tags(session, url, tag, attribute):
         page = session.get(url)
