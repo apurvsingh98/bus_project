@@ -70,12 +70,16 @@ class UpdateDB:
     @staticmethod
     def process_eta_text(eta_text):
         eta_list = []
+        # eta_text will be alternating stop names and ETAs. We treat them differently based on whether they are odd or
+        # even.
         for index, string in enumerate(eta_text):
             if index % 2 == 0:
                 route_search = re.search(r'^#\d+[a-zA-Z]*', string)
                 if route_search is not None:
                     eta_list.append(route_search.group()[1:])
             if index % 2 != 0:
+                # If the ETA string comes back as 'DUE', then the bus arrival is imminent and we assign an ETA value of
+                # 0.
                 if string == 'DUE':
                     eta_list.append(0)
 
@@ -86,20 +90,24 @@ class UpdateDB:
 
         return eta_list
 
+
     @staticmethod
     def process_vehicle_text(vehicle_text):
         vehicle_data = []
         for string in vehicle_text:
-            vehicle_no = re.search(r'Vehicle\s[0-9]+', string)  # Find bus id number
+            # Find bus id number
+            vehicle_no = re.search(r'Vehicle\s[0-9]+', string)
             if vehicle_no is not None:
                 vehicle_string = vehicle_no.group()
                 vehicle_data.append(vehicle_string[8:])
 
-            passenger_info = re.search(r'Passengers:\s*[a-zA-Z]+\s*[a-zA-Z]+', string)  # Find the data about how full the bus is with passengers.
+            # Find the data about how full the bus is with passengers.
+            passenger_info = re.search(r'Passengers:\s*[a-zA-Z]+\s*[a-zA-Z]+', string)
             if passenger_info is not None:
                 pass_string = passenger_info.group()
                 pass_items = pass_string.split('\t')
-                vehicle_data.append(pass_items[-1])  # Last item in the list is the actual data
+                # Last item in the list is the actual data
+                vehicle_data.append(pass_items[-1])
 
         return vehicle_data
 
@@ -123,7 +131,8 @@ class UpdateDB:
             if len(eta_data) % 2 == 0 and len(eta_data) == len(vehicle_data):
                 routeno = combo[0]
                 for index, data in enumerate(eta_data):
-                    if data == routeno:   # If the scraped route id and the route id we're searching for match...
+                    # If the scraped route id and the route id we're searching for match...
+                    if data == routeno:
                         eta = eta_data[index + 1]
                         vehicleno = vehicle_data[index]
                         passengers = vehicle_data[index + 1]
