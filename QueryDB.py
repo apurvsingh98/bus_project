@@ -94,7 +94,7 @@ class QueryDB:
         connection = sqlite3.Connection('transit_data.db')
         cursor = connection.cursor()
 
-        cursor.execute("""SELECT COUNT(STOP_ID) FROM STOPS""")
+        cursor.execute("""SELECT COUNT(ID) FROM ESTIMATES""")
 
         results = cursor.fetchall()
         for r in results:

@@ -16,7 +16,7 @@ class CreateDB:
     # Private method. Be careful when using, because you could wipe the database.
     @staticmethod
     def reset_db_with_new_stops_n_routes():
-        CreateDB.__make_empty_tables()  # Create three blank tables
+        CreateDB.__make_empty_tables()  # Create four blank tables
         CreateDB.__fill_routes_and_stops()  # Scrape TrueTime and fill in all the current bus routes and stops
         CreateDB.__confirm_empty_table_generated()  # Check the table structure to make sure all is well
 
