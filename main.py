@@ -35,7 +35,7 @@ def main():
             # The explore window allows the user to generate summary statistics about the transit data they've already
             # collected.
             if int(main_select) == 3:
-                explore_window()
+                get_avg_frequency_by_criteria()
 
             # If the user entered a value that wasn't one of the four options, print the error message and repeat the
             # loop.
@@ -288,6 +288,7 @@ def get_avg_frequency_by_criteria():
     if len(limit_by_days) != 0:
         scraped_days_set = list(scraped_days_set.intersection(limit_by_days))
 
+    # If the filtering criteria didn't leave any days, return to the main menu.
     if len(scraped_days_set) == 0:
         print('Your filtering criteria didn\t return any days that matched the data you have scraped!')
         return
@@ -301,6 +302,7 @@ def get_avg_frequency_by_criteria():
     averages = filtered_wait_time_averages_stops(stop_list, route, scraped_days_set)
 
     total = 0
+    # Averages is a dictionary with {STOP_ID: average frequency}.
     if averages:
         for key, value in averages.items():
             print(f'The average frequency at stop: {key} over the selected period is {value}')
@@ -308,24 +310,6 @@ def get_avg_frequency_by_criteria():
         for key, value in official_on_times.items():
             print(f'\nOver the last five years, the officially-reported average on-time percentage in {key} were:\n'
                   f'Saturdays: {value.loc["SAT."]}\nSundays: {value.loc["SUN."]}\nWeekdays: {value.loc["WEEKDAY"]}')
-
-
-def explore_window():
-    # Removed option 1 (which was: average frequency for all scraped stops/routes), because it was taking too long to process.
-    exp_choice = 2
-
-    # exp_choice = int(input('Welcome to the explore window. Enter RETURN to return to the main menu. '
-    #                        '\nEnter 1 or 2 to select an option:\n1) Get average frequency '
-    #                        'for all data in your database.\n2) Select filters.\n'))
-    #
-    # if exp_choice == 'RETURN':
-    #     return
-
-    # if exp_choice == 1:
-    #     get_avg_frequency_for_all()
-
-    if exp_choice == 2:
-        get_avg_frequency_by_criteria()
 
 
 if __name__ == '__main__':
